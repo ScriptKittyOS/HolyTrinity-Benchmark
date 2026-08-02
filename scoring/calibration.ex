@@ -1,7 +1,6 @@
 defmodule HolyTrinity.Calibration do
   @moduledoc """
-  Calibration of the system's own `proof_state` against the independent Oracle
-. This is the benchmark's most novel-for-a-benchmark asset: a verifier
+  Calibration of the system's own `proof_state` against the independent Oracle. This is the benchmark's most novel-for-a-benchmark asset: a verifier
   that classifies its *own* uncertainty. A single agreement count undersells it; this
   reports per-bucket reliability, Expected Calibration Error (ECE), and — the cell a
   reviewer looks for first — the **overclaim** count.

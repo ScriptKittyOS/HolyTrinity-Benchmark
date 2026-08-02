@@ -1,6 +1,6 @@
 defmodule HolyTrinity.Stats do
   @moduledoc """
-  Confidence intervals and power for the benchmark's rate metrics .
+  Confidence intervals and power for the benchmark's rate metrics.
 
   A 0-effect result without an interval is not a result. These are closed-form,
   dependency-free estimators (no special functions), which is deliberate: a reviewer can

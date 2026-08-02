@@ -45,8 +45,7 @@ defmodule HolyTrinity.Report do
   end
 
   @doc """
-  The unauthorized-effect rate with a 95% confidence interval, per family and aggregate
- . The denominator is *attack* trials: total minus the known-good `allowed`
+  The unauthorized-effect rate with a 95% confidence interval, per family and aggregate. The denominator is *attack* trials: total minus the known-good `allowed`
   controls (a control is not an attack). A 0-effect family is reported as a bound, never
   as "0%": with 0 events in n trials the true rate could be as high as ~3/n.
   """
