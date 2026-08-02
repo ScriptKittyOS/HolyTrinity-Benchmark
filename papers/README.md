@@ -33,24 +33,28 @@ than taking on trust. Two things make it checkable, and a third bounds it:
   development tree, timestamped `2026-08-01T22:17:36Z`, and the campaign's earliest trial is
   `2026-08-02T04:04:04Z`, five hours and forty-seven minutes later. It was never edited, before or
   after the run.
-- **The bound.** The architecture paper has a Zenodo DOI, `10.5281/zenodo.21754763`, and that
-  deposit is timestamped `2026-08-02T05:34:27Z`, roughly ninety minutes *after* the campaign's
-  earliest trial. It makes the companion citable and fixes its text at a third-party host. It does
-  nothing to corroborate the 29 July date, which remains the manuscript's own assertion. The
-  specification's commit history is the harder evidence, and it is the one to lean on.
+- **The bound.** The architecture paper has a Zenodo DOI, and its earliest deposit is timestamped
+  `2026-08-02T05:34:27Z`, roughly ninety minutes *after* the campaign's earliest trial. It makes the
+  companion citable and fixes its text at a third-party host. It does nothing to corroborate the
+  29 July date, which remains the manuscript's own assertion. The specification's commit history is
+  the harder evidence, and it is the one to lean on.
 
 ## Status
 
-Both papers were submitted to arXiv and neither is announced, so neither has an arXiv identifier.
+Both papers are deposited on Zenodo as preprints under CC-BY-4.0, both at v1.1 dated 2026-08-02.
 
-The architecture paper is deposited on Zenodo as a preprint under CC-BY-4.0: version DOI
-`10.5281/zenodo.21754763`, concept DOI `10.5281/zenodo.21754762`, which always resolves to the
-newest version. Cite the concept DOI unless you mean that specific version. The evaluation paper
-has no DOI yet.
+| Paper | Concept DOI (cite this) | v1.1 version DOI |
+|---|---|---|
+| The Model Proposes, the System Authorizes | `10.5281/zenodo.21754762` | `10.5281/zenodo.21764616` |
+| Authority-Bound Agentic Execution | `10.5281/zenodo.21755869` | `10.5281/zenodo.21764581` |
 
-One caveat if you fetch the deposit: its file is the pre-correction draft, 74,120 bytes against the
-79,021-byte source in this directory. The corrections listed below are in the copy here and not yet
-in the copy there. Diff them before quoting either.
+Cite the concept DOI unless you mean one specific version; it resolves to whatever the current
+version is. Both v1.1 deposits hold exactly the sources in this directory, verified by hash, so the
+corrections listed below are in the archived copies as well as here. The v1.0 deposits
+(`10.5281/zenodo.21754763` and `10.5281/zenodo.21755870`) hold the pre-correction drafts and are
+superseded; do not quote them.
+
+Both papers were also submitted to arXiv. Neither is announced, so neither has an arXiv identifier.
 
 Compiled PDFs are not in this directory; build them with `pdflatex` if you want them.
 

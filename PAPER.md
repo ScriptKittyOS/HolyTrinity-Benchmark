@@ -828,10 +828,10 @@ Widely-cited canonical sources.
  (Source of the `nist-p16` and `nist-p25` identifiers used in §9.1.)
 15. A. Croft. *The Model Proposes, the System Authorizes: An Authority Control Plane for AI
  Agents on the BEAM.* Manuscript dated 29 July 2026. Zenodo,
- `https://doi.org/10.5281/zenodo.21754763` (concept DOI `10.5281/zenodo.21754762`, which
- resolves to the newest version). The deposit is timestamped 2026-08-02, later than this
- paper's campaign, so it gives the companion a citable identifier without corroborating the
- 29 July date the manuscript states. Source in the artifact repository at `papers/the-model-proposes-the-system-authorizes.tex`.
+ `https://doi.org/10.5281/zenodo.21754762` (concept DOI, which resolves to the current
+ version; v1.1 is `10.5281/zenodo.21764616`). The earliest deposit is timestamped 2026-08-02,
+ later than this paper's campaign, so it gives the companion a citable identifier without
+ corroborating the 29 July date the manuscript states. Source in the artifact repository at `papers/the-model-proposes-the-system-authorizes.tex`.
  (Companion architecture paper. States the threat model, the security invariant, and the
  nine mechanisms this paper evaluates, and pre-registers this evaluation's primary metric,
  secondary metrics, attack classes, and falsification criterion.)

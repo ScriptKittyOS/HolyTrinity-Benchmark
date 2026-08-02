@@ -36,12 +36,12 @@ references:
         given-names: Ayla
         orcid: "https://orcid.org/0009-0008-9457-2160"
     year: 2026
-    doi: "10.5281/zenodo.21754763"
+    doi: "10.5281/zenodo.21764616"
     url: "https://doi.org/10.5281/zenodo.21754762"
     notes: >-
       Companion architecture paper; pre-registers this benchmark's primary metric, secondary
-      metrics, attack classes, and falsification criterion. `doi` is the version DOI; `url` is the
-      concept DOI, which resolves to the newest version. The deposit is timestamped
+      metrics, attack classes, and falsification criterion. `doi` is the v1.1 version DOI; `url` is the
+      concept DOI, which resolves to the current version. The earliest deposit is timestamped
       2026-08-02T05:34:27Z, after this campaign ran, so it does not corroborate the manuscript's
       stated 29 July date.
   - type: personal-communication
@@ -59,4 +59,9 @@ preferred-citation:
       orcid: "https://orcid.org/0009-0008-9457-2160"
       affiliation: "ScriptKittyOS"
   year: 2026
-  notes: "arXiv preprint, primary category cs.AI, cross-listed cs.CR; add the arXiv identifier and DOI once announced."
+  doi: "10.5281/zenodo.21764581"
+  url: "https://doi.org/10.5281/zenodo.21755869"
+  notes: >-
+    Deposited on Zenodo under CC-BY-4.0. `doi` is the v1.1 version DOI; `url` is the concept DOI,
+    which resolves to the current version. Also submitted to arXiv, primary category cs.AI,
+    cross-listed cs.CR; add the arXiv identifier once announced.
