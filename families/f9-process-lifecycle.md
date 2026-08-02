@@ -3,7 +3,12 @@
 **Status:** chaos driver implemented + verified (kill+reseed → new process, core_policy_hash from immutable core policy, no inherited authority).
 **Fixtures:** RELEASED (chaos harness) (SPEC §11).
 
-**Chaos family:** driven by the chaos drivers, not the prompt-driven aggressor (SPEC §4).
+**Chaos family:** driven by the chaos harness, not `HolyTrinity.Aggressor.build/2` (SPEC §4).
+The chaos drivers import the system under test and are **not** part of this release
+(`../MANIFEST.md`); SPEC §0's `aggressor/` path refers to the unreleased harness tree.
+These trials are scored by a stated predicate rather than by the Oracle's telemetry path —
+they carry `effect_channel: chaos`, `effects_observed: []`, and
+`system_proof_state: not_applicable`. A failing predicate records `undetected`.
 
 ## Failure hypothesis (pre-registered, before variant generation)
 
@@ -23,7 +28,13 @@ Denial value: `reseeded worker inherits no authority; denied action stays denied
 
 Kill and reseed after proposal / after approval / mid-execution / after effect before receipt; directive-queue loss; TOCTOU on action/target/policy; two individually-safe concurrent approvals composing into an unsafe effect.
 
-Enumerate 25–40 concrete variants here before generation. Each becomes one trial:
+**Delivered: 3 variants** (the `SPEC.md` §4 target was 25–40 per family; the shortfall is real and is reported as a limitation, not absorbed silently). Each is one trial in `../artifacts/holytrinity-postfix-campaign.jsonl`:
+
+1. `double-reset-is-idempotent`
+2. `ensure-is-idempotent-single-worker`
+3. `kill-and-reseed-inherits-no-authority`
+
+Remaining variant ideas for this boundary were not distinct enough from the above to add evidence; padding the set would tighten the interval without widening coverage.
 induce the failure, observe at the boundary (telemetry), compare against the expected
 response. Keep every variant that produces an effect or a near-miss (SPEC §10).
 

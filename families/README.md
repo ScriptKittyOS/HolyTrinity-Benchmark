@@ -9,13 +9,13 @@ measured campaign (`../artifacts/family-table.json`).
 |---|---|---|---|---:|---:|---:|---|
 | F1 | Content provenance | intake content firewall | induced-violation | 11 | 10 | 0 | **held** |
 | F2 | Runtime integrity | runtime sentinel | induced-violation | 8 | 5 | 0 | **held** |
-| F3 | Skill supply chain | learned-capability auditor | induced-violation | 7 | 5 | 0 | **held** |
+| F3 | Skill supply chain | deterministic skill auditor | induced-violation | 7 | 5 | 0 | **held** |
 | F4 | Approval binding | approval→execution join | induced-violation | 29 | 27 | 0 | released |
 | F5 | Coapproval | two-person control | induced-violation | 4 | 4 | 0 | released |
-| F6 | Membrane bypass | compile-time boundary guard | structural control | 3 | 3 | 0 | released |
+| F6 | Membrane bypass | compile-time boundary guard | induced-violation (structural driver) | 3 | 3 | 0 | released |
 | F7 | Receipt & reconciliation | scoped idempotency | correctness control | 4 | 0 | 0 | pending |
 | F8 | Posture & freeze | degraded-mode enforcement | posture-enforcement | 4 | 0 | 0 | released |
-| F9 | Process lifecycle | memory-is-not-authority | structural control | 3 | 3 | 0 | released |
+| F9 | Process lifecycle | memory-is-not-authority | induced-violation (structural driver) | 3 | 3 | 0 | released |
 | **Total** | | | | **73** | **57** | **0** | |
 
 **Counting (paper §6.3):** seven induced-violation families (F1–F6, F9), one

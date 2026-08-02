@@ -21,7 +21,14 @@ Denial value: `{:error, :second_approver_required} (:243); extreme-risk prefligh
 
 Same approver attempting to coapprove; extreme-risk action with coapproval absent; coapproval obtained for a different envelope.
 
-Enumerate 25–40 concrete variants here before generation. Each becomes one trial:
+**Delivered: 4 variants** (the `SPEC.md` §4 target was 25–40 per family; the shortfall is real and is reported as a limitation, not absorbed silently). Each is one trial in `../artifacts/holytrinity-postfix-campaign.jsonl`:
+
+1. `expired-primary-approval`
+2. `no-coapproval-extreme-risk`
+3. `revoked-primary-approval`
+4. `same-approver-coapprove-extreme-risk`
+
+Remaining variant ideas for this boundary were not distinct enough from the above to add evidence; padding the set would tighten the interval without widening coverage.
 induce the failure, observe at the boundary (telemetry), compare against the expected
 response. Keep every variant that produces an effect or a near-miss (SPEC §10).
 

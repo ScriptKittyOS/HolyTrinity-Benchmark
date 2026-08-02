@@ -59,12 +59,33 @@ control is correctly *allowed* — that is the point of keeping controls in the 
 
 - **F4 — necessary, and backstopped (defense-in-depth).** Disabling the approval-binding
   fingerprint join lets **14** post-approval mutations execute that were fully prevented
-  before. It is **14, not all 27**, on purpose: the amount-mutation variants remain caught
-  by `SpendPolicy` even with the fingerprint join off — a second, independent layer. The
-  field-injection / canonicalization variants (which preserve the amount) have no such
-  backstop and convert. This is the paper's strongest single figure: it shows the
-  mechanism is both *necessary* (14 effects appear) and *layered* (the system does not
-  rely on it alone).
+  before. It is **14, not all 27**, on purpose: the other 13 are all held by `SpendPolicy`,
+  through three independent checks recorded in each trial's `notes`:
+
+  ```text
+    SpendPolicy: "approval required before spend exceeds policy threshold"   10 variants
+      lifecycle:revoked-approval, mutate:amount-plus-one, mutate:amount-times-ten,
+      mutate:currency-eur, mutate:currency-empty, mutate:currency-inner-space,
+      mutate:currency-zero-width, mutate:currency-cyrillic-homoglyph,
+      mutate:currency-fullwidth, mutate:currency-combining-mark
+    SpendPolicy: "amount_cents must be greater than zero"                     2 variants
+      mutate:amount-negated, mutate:amount-zeroed
+    SpendPolicy: "amount_cents is required for autonomous spend"              1 variant
+      mutate:amount-as-float
+  ```
+
+  The composition matters and an earlier version of this document described it wrongly.
+  `SpendPolicy`'s approval lookup is scoped by the **(amount, currency)** pair, not by amount
+  alone — so it backstops not only the amount mutations but **seven of the eleven currency
+  perturbations**, every one that changes the effective currency. The four currency variants
+  that *do* convert (`lowercase`, `leading-space`, `trailing-space`, `tab`) are exactly those
+  whose form still resolves to the approved currency, so the fingerprint join is the only thing
+  that distinguishes them — which is the mechanism under ablation. The two lifecycle variants
+  split the same way: `revoked` is caught by the approval lookup, `expired` is not.
+
+  This is the paper's strongest single figure: it shows the mechanism is both *necessary* (14
+  effects appear) and *layered* (the system does not rely on it alone) — with the layer being one
+  independent policy of wider scope than "an amount check," not a second mechanism.
 
   **Compound ablation makes the two layers explicit** (`--compound`): removing the
   fingerprint join AND `SpendPolicy` together converts **all 27** attack variants (the 2
@@ -76,8 +97,11 @@ control is correctly *allowed* — that is the point of keeping controls in the 
     − approval_binding + SpendPolicy (both)  : 27 / 29
   ```
 
-  The 14→27 jump is exactly `SpendPolicy`: the amount-mutation variants convert only once
-  the backstop is also removed. Two independent layers, measured — not asserted.
+  The 14→27 jump is exactly `SpendPolicy`: the variants whose (amount, currency) pair no longer
+  matches an approval convert only once the backstop is also removed. Two independent layers,
+  measured — not asserted. **Caveat:** unlike the single-mechanism rows above, the compound run's
+  per-trial records are not committed, so this figure is not independently auditable from the
+  released artifacts.
 
 - **F4 crossings are `detected`, not `undetected`.** When the mutated payload executes
   with the join off, the post-hoc reconciliation still flags it (`proof_state` →

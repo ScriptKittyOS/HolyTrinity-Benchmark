@@ -1,10 +1,16 @@
-# Paper clarifications & corrections (for the next revision)
+# Paper clarifications and corrections
 
-`PAPER.md` in this repository is the **published** version (arXiv), included verbatim. This
-file tracks clarifications and corrections that an adversarial review surfaced and that will
-be folded into the next revision. The repository's own docs (`README.md`, `REPORT.md`) already
-carry the corrected framing; the items below are the ones that live in the published paper
-text and therefore cannot be edited in place.
+> **Status, 2 August 2026: superseded. Every correction below has been applied.**
+>
+> This file was written when `PAPER.md` was expected to be a published arXiv version that could
+> not be edited in place. Neither paper has been announced and no arXiv identifier exists, so the
+> corrections were applied directly to the paper instead of being deferred to a revision. The
+> current sources are `papers/authority-bound-agentic-execution.tex` and its Markdown rendering
+> at `PAPER.md`, and both carry the fixes described here plus a further round from a CoSAI
+> whitepaper assessment. See `papers/README.md` for the full list.
+>
+> The file is kept as a record of what an adversarial review surfaced and when. Read it as
+> history rather than as an outstanding to-do list.
 
 Every published *number* reproduces exactly from the committed `artifacts/*.jsonl` (verified);
 these are matters of framing, labeling, and one methodological baseline — not arithmetic
@@ -63,7 +69,7 @@ proposal; the 12 controls are excluded). `README.md` is updated.
 ## 6. Internal reference left in the public paper
 
 The front matter reads "written from the public-safe side of the disclosure boundary (private
-brief §25)." **Correction:** drop the "(private brief §25)" parenthetical — it points at a
+brief §25)." **Correction:** drop the "(a private-document reference)" parenthetical — it points at a
 non-public document.
 
 ## 7. False-denial confidence interval

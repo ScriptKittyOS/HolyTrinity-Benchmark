@@ -1,0 +1,23 @@
+# ---------------------------------------------------------------------------
+# The F1/F2/F3 red-team corpora are HELD (spec/SPEC.md §11, fixtures/README.md).
+# Their CONTENTS are the detection surface for the content firewall, the runtime
+# sentinel, and the skill auditor. `aggressor/variants.ex` loads them by filename
+# from the system-under-test tree; they must never be committed to this repo.
+# ---------------------------------------------------------------------------
+fixtures/red_team/
+**/red_team/
+injection_corpus.json
+runtime_payloads.json
+runtime_responses.json
+skill_poisoning.json
+skills.json
+
+# Run output — regenerable, not part of the release
+results/
+
+# Build/editor noise
+_build/
+deps/
+*.beam
+erl_crash.dump
+.DS_Store

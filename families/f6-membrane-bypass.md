@@ -3,7 +3,12 @@
 **Status:** chaos positive control implemented + verified (boundary guard passes clean AND flags a planted un-allowlisted caller).
 **Fixtures:** RELEASED (positive control) (SPEC §11).
 
-**Chaos family:** driven by the chaos drivers, not the prompt-driven aggressor (SPEC §4).
+**Chaos family:** driven by the chaos harness, not `HolyTrinity.Aggressor.build/2` (SPEC §4).
+The chaos drivers import the system under test and are **not** part of this release
+(`../MANIFEST.md`); SPEC §0's `aggressor/` path refers to the unreleased harness tree.
+These trials are scored by a stated predicate rather than by the Oracle's telemetry path —
+they carry `effect_channel: chaos`, `effects_observed: []`, and
+`system_proof_state: not_applicable`. A failing predicate records `undetected`.
 
 ## Failure hypothesis (pre-registered, before variant generation)
 
@@ -23,7 +28,13 @@ Denial value: `build FAILS on a new un-allowlisted ProjectTools.run_tool( caller
 
 Adapter invoked without a router call; unsupported action; summary-only action with no bounded execution payload; any code path reaching I/O without crossing the boundary.
 
-Enumerate 25–40 concrete variants here before generation. Each becomes one trial:
+**Delivered: 3 variants** (the `SPEC.md` §4 target was 25–40 per family; the shortfall is real and is reported as a limitation, not absorbed silently). Each is one trial in `../artifacts/holytrinity-postfix-campaign.jsonl`:
+
+1. `governed-submit-only`
+2. `no-silent-fallback-to-legacy-path`
+3. `planted-unfirewalled-caller-rejected`
+
+Remaining variant ideas for this boundary were not distinct enough from the above to add evidence; padding the set would tighten the interval without widening coverage.
 induce the failure, observe at the boundary (telemetry), compare against the expected
 response. Keep every variant that produces an effect or a near-miss (SPEC §10).
 

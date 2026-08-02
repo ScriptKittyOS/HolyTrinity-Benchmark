@@ -6,6 +6,14 @@ This work — the HolyTrinity Bench documentation, specification, results artifa
 released fixtures, and the system-free scoring/reporting modules in this repository — is
 licensed under the Creative Commons Attribution 4.0 International License.
 
+The operative terms are the full CC BY 4.0 legal code, incorporated here by reference:
+  https://creativecommons.org/licenses/by/4.0/legalcode
+SPDX-License-Identifier: CC-BY-4.0
+
+The following is Creative Commons' own non-binding summary of that license, reproduced for
+convenience. It is NOT a substitute for the legal code above, and where the two differ the
+legal code governs.
+
 You are free to:
   - Share — copy and redistribute the material in any medium or format.
   - Adapt — remix, transform, and build upon the material for any purpose, even
@@ -15,14 +23,11 @@ Under the following terms:
   - Attribution — You must give appropriate credit, provide a link to the license, and
     indicate if changes were made. You may do so in any reasonable manner, but not in any
     way that suggests the licensor endorses you or your use.
+  - No additional restrictions — You may not apply legal terms or technological measures
+    that legally restrict others from doing anything the license permits.
 
-No additional restrictions — You may not apply legal terms or technological measures that
-legally restrict others from doing anything the license permits.
-
-The full legal code is available at:
-  https://creativecommons.org/licenses/by/4.0/legalcode
-A human-readable summary is at:
-  https://creativecommons.org/licenses/by/4.0/
+Note that the legal code includes terms this summary omits, including the disclaimer of
+warranties and limitation of liability (§5) and the termination provisions (§6).
 
 NOTE. This license covers only the contents of this repository. It does NOT grant any
 rights in the system under test (the Trinity authority control plane), which is not

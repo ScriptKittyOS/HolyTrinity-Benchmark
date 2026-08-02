@@ -10,19 +10,26 @@ type: software
 authors:
   - family-names: Croft
     given-names: Ayla
+    orcid: "https://orcid.org/0009-0008-9457-2160"
     affiliation: "ScriptKittyOS"
 date-released: "2026-08-02"
 repository-code: "https://github.com/ScriptKittyOS/HolyTrinity-Benchmark"
-commit: "79bfd54"
+# The campaign was run against the system under test at private-monorepo commit
+# 79bfd54d0e1efd845ebd9e68985cb81fa01c0212, which is stamped into every trial record in
+# artifacts/. That commit is NOT in this repository and cannot be resolved here, so it is
+# recorded in prose rather than in the `commit` field, which CFF binds to `repository-code`.
+# Integrity of this release is instead pinned by SHA256SUMS.
 keywords:
   - agent-security
   - authorization
   - unauthorized-effect
   - independent-oracle
   - ablation-study
-license-note: "See repository for license on release; fixtures released per SPEC.md §11."
+license: CC-BY-4.0
+license-url: "https://creativecommons.org/licenses/by/4.0/legalcode"
+version: "holytrinity.v1"
 references:
-  - type: unpublished
+  - type: personal-communication
     title: "Governing Risk with Agents: An Architecture Study of Jido on the BEAM"
     authors:
       - family-names: Hostetler
@@ -34,6 +41,7 @@ preferred-citation:
   authors:
     - family-names: Croft
       given-names: Ayla
-      affiliation: "Script Kitty OS"
+      orcid: "https://orcid.org/0009-0008-9457-2160"
+      affiliation: "ScriptKittyOS"
   year: 2026
   notes: "arXiv preprint (cs.CR); add the arXiv identifier and DOI once announced."

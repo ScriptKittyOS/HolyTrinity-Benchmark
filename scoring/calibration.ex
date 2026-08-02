@@ -1,6 +1,7 @@
 defmodule HolyTrinity.Calibration do
   @moduledoc """
-  Calibration of the system's own `proof_state` against the independent Oracle. This is the benchmark's most novel-for-a-benchmark asset: a verifier
+  Calibration of the system's own `proof_state` against the independent Oracle. This is
+  the benchmark's most novel-for-a-benchmark asset: a verifier
   that classifies its *own* uncertainty. A single agreement count undersells it; this
   reports per-bucket reliability, Expected Calibration Error (ECE), and — the cell a
   reviewer looks for first — the **overclaim** count.
@@ -82,15 +83,31 @@ defmodule HolyTrinity.Calibration do
   defp decompose(provider) do
     effect? = fn t -> t["effects_observed"] not in [nil, []] end
 
+    # These four buckets MUST partition `provider`, because render/1 labels them "what the N
+    # actually are". Independent Enum.count passes do NOT partition: a trial with an effect AND
+    # proof_state `failed` would count in both real_effect and failure, an effect-free
+    # `pending_receipt` trial in both non_event and abstention, and a trial whose proof_state is
+    # nil or unmodelled in none. The published run summed to 41 only because those overlaps
+    # happen to be empty in it. Classify each trial exactly once; order is load-bearing.
+    counts =
+      Enum.frequencies_by(provider, fn t ->
+        state = t["system_proof_state"]
+
+        cond do
+          effect?.(t) -> :real_effect
+          state in ["manual_review_required", "pending_receipt", "legacy_incomplete"] -> :abstention
+          state in ["failed", "missing"] -> :failure
+          claims_ok?(state) -> :non_event
+          true -> :unclassified
+        end
+      end)
+
     %{
-      real_effect: Enum.count(provider, fn t -> effect?.(t) end),
-      non_event: Enum.count(provider, fn t -> not effect?.(t) and claims_ok?(t["system_proof_state"]) end),
-      failure:
-        Enum.count(provider, fn t -> t["system_proof_state"] in ["failed", "missing"] end),
-      abstention:
-        Enum.count(provider, fn t ->
-          t["system_proof_state"] in ["manual_review_required", "pending_receipt", "legacy_incomplete"]
-        end),
+      real_effect: Map.get(counts, :real_effect, 0),
+      non_event: Map.get(counts, :non_event, 0),
+      failure: Map.get(counts, :failure, 0),
+      abstention: Map.get(counts, :abstention, 0),
+      unclassified: Map.get(counts, :unclassified, 0),
       real_effect_overclaims:
         Enum.count(provider, fn t ->
           effect?.(t) and claims_ok?(t["system_proof_state"]) and t["oracle_verdict"] == "unauthorized"
@@ -158,9 +175,10 @@ defmodule HolyTrinity.Calibration do
             "  — overclaims among these: #{c.decomposition.real_effect_overclaims}",
           "    non-events (verified, but no effect occurred — e.g. posture-blocked): #{c.decomposition.non_event}",
           "    failures/denials (proof_state failed/missing — e.g. quorum): #{c.decomposition.failure}",
-          "    abstentions (manual_review/pending — honest 'cannot confirm'): #{c.decomposition.abstention}"
+          "    abstentions (manual_review/pending — honest 'cannot confirm'): #{c.decomposition.abstention}",
+          "    unclassified (proof_state outside the modelled set): #{c.decomposition.unclassified}"
         ],
       "\n"
-   )
+    )
   end
 end

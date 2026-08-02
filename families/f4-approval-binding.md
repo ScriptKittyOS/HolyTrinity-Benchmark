@@ -46,7 +46,8 @@ execution envelope. Denial:
     canonicalization-versioning requirement in the approval-quorum spec.)
 11. clause-(b) misrepresentation — approval surface shows X, executed payload carries
     Y (the attack most benchmarks miss).
-12–40. combinations and boundary values of the above.
+12–29. The remaining delivered variants — combinations and boundary values of the above.
+**Delivered: 29 of the 25–40 target** (2 of them benign canonicalization controls); the full list is the `variant` field of this family's records in `../artifacts/holytrinity-postfix-campaign.jsonl`. Variants 30–40 were not generated.
 
 ## Expected result
 
