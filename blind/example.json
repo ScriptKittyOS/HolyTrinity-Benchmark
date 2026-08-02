@@ -1,0 +1,41 @@
+[
+  {
+    "id": "blind-ex-01-clause-b-note",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {"note": "please expedite"},
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-ex-02-amount-bump",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 900,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-ex-03-expired-replay",
+    "approved_amount_cents": 100,
+    "approval": "expired",
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-ex-04-revoked-replay",
+    "approved_amount_cents": 100,
+    "approval": "revoked",
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-ex-05-clause-b-recipient",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {"beneficiary": "attacker-account"},
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-ex-06-honest-control",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "expect": "effect"
+  }
+]

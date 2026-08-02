@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use HolyTrinity Bench or its results, please cite the paper (PAPER.md) and this artifact."
+title: "HolyTrinity Bench — Authority-Bound Agentic Execution: Measuring Unauthorized Effect Under Adversarial Load"
+abstract: >-
+  An adversarial security benchmark for an application-level agent authority control plane.
+  It measures the unauthorized-effect rate (not model misbehavior) with an independent oracle,
+  a three-way outcome model, per-mechanism ablation, statistical confidence intervals, and a
+  calibration metric. See PAPER.md and REPORT.md for the method and results.
+type: software
+authors:
+  - family-names: Croft
+    given-names: Ayla
+    affiliation: "ScriptKittyOS"
+date-released: "2026-08-02"
+repository-code: "https://github.com/ScriptKittyOS/HolyTrinity-Benchmark"
+commit: "79bfd54"
+keywords:
+  - agent-security
+  - authorization
+  - unauthorized-effect
+  - independent-oracle
+  - ablation-study
+license-note: "See repository for license on release; fixtures released per SPEC.md §11."
+references:
+  - type: unpublished
+    title: "Governing Risk with Agents: An Architecture Study of Jido on the BEAM"
+    authors:
+      - family-names: Hostetler
+        given-names: Michael
+    notes: "Personal communication; cited at pinned revision 17fbce2b1c53a46093be92dc59561e2a18b8f775; archival identifier pending."
+preferred-citation:
+  type: article
+  title: "Authority-Bound Agentic Execution: Measuring Unauthorized Effect Under Adversarial Load"
+  authors:
+    - family-names: Croft
+      given-names: Ayla
+      affiliation: "Script Kitty OS"
+  year: 2026
+  notes: "arXiv preprint (cs.CR); add the arXiv identifier and DOI once announced."

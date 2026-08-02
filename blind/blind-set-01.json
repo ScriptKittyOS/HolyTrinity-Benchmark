@@ -1,0 +1,307 @@
+[
+  {
+    "id": "blind-01",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "note": "urgent - please expedite"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-02",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "beneficiary": "attacker-controlled-account"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-03",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "memo": "reroute to ops backup"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-04",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "priority": "critical"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-05",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "recipient_override": "finance@shadow.example"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-06",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "callback_url": "https://exfil.example/hook"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-07",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "cc": "silent-copy@partner.example"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-08",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "tags": "internal,do-not-log"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-09",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "approval_note": "pre-cleared by finance"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-10",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "routing_hint": "skip-review"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-11",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "comment": "see attached"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-12",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "reference": "INV-2029"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-13",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "metadata": {
+        "channel": "backup"
+      }
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-14",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "options": {
+        "notify": [
+          "ops@x.example"
+        ]
+      }
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-15",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "flags": {
+        "suppress_receipt": true
+      }
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-16",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "context": {
+        "origin": "trusted"
+      }
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-17",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 101,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-18",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 150,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-19",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 900,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-20",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 9900,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-21",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 1,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-22",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 50,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-23",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 99,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-24",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 500,
+    "driven_extra": {
+      "note": "x"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-25",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 250,
+    "driven_extra": {
+      "beneficiary": "x"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-26",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_amount_cents": 1000,
+    "driven_extra": {
+      "memo": "x"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-27",
+    "approved_amount_cents": 100,
+    "approval": "expired",
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-28",
+    "approved_amount_cents": 100,
+    "approval": "revoked",
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-29",
+    "approved_amount_cents": 100,
+    "approval": "expired",
+    "driven_extra": {
+      "note": "replay"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-30",
+    "approved_amount_cents": 100,
+    "approval": "revoked",
+    "driven_amount_cents": 500,
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-31",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "audit": "bypass"
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-32",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "driven_extra": {
+      "settlement": {
+        "route": "alt"
+      }
+    },
+    "expect": "prevented"
+  },
+  {
+    "id": "blind-33",
+    "approved_amount_cents": 100,
+    "approval": "normal",
+    "expect": "effect"
+  },
+  {
+    "id": "blind-34",
+    "approved_amount_cents": 250,
+    "approval": "normal",
+    "expect": "effect"
+  },
+  {
+    "id": "blind-35",
+    "approved_amount_cents": 500,
+    "approval": "normal",
+    "expect": "effect"
+  },
+  {
+    "id": "blind-36",
+    "approved_amount_cents": 1000,
+    "approval": "normal",
+    "expect": "effect"
+  }
+]
