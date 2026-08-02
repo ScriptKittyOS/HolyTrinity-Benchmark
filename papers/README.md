@@ -33,14 +33,26 @@ than taking on trust. Two things make it checkable, and a third bounds it:
   development tree, timestamped `2026-08-01T22:17:36Z`, and the campaign's earliest trial is
   `2026-08-02T04:04:04Z`, five hours and forty-seven minutes later. It was never edited, before or
   after the run.
-- **The bound.** Neither paper carries an archival identifier yet. The 29 July date on the
-  architecture paper is stated in the document, not certified by a third party. Read it as a
-  companion whose date is asserted; the specification's commit history is the harder evidence.
+- **The bound.** The architecture paper has a Zenodo DOI, `10.5281/zenodo.21754763`, and that
+  deposit is timestamped `2026-08-02T05:34:27Z`, roughly ninety minutes *after* the campaign's
+  earliest trial. It makes the companion citable and fixes its text at a third-party host. It does
+  nothing to corroborate the 29 July date, which remains the manuscript's own assertion. The
+  specification's commit history is the harder evidence, and it is the one to lean on.
 
 ## Status
 
-Both papers were submitted to arXiv and neither is announced. No arXiv identifier or DOI exists for
-either. Compiled PDFs are not in this directory; build them with `pdflatex` if you want them.
+Both papers were submitted to arXiv and neither is announced, so neither has an arXiv identifier.
+
+The architecture paper is deposited on Zenodo as a preprint under CC-BY-4.0: version DOI
+`10.5281/zenodo.21754763`, concept DOI `10.5281/zenodo.21754762`, which always resolves to the
+newest version. Cite the concept DOI unless you mean that specific version. The evaluation paper
+has no DOI yet.
+
+One caveat if you fetch the deposit: its file is the pre-correction draft, 74,120 bytes against the
+79,021-byte source in this directory. The corrections listed below are in the copy here and not yet
+in the copy there. Diff them before quoting either.
+
+Compiled PDFs are not in this directory; build them with `pdflatex` if you want them.
 
 ## Corrections applied to both
 

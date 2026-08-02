@@ -29,6 +29,21 @@ license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/legalcode"
 version: "holytrinity.v1"
 references:
+  - type: article
+    title: "The Model Proposes, the System Authorizes: An Authority Control Plane for AI Agents on the BEAM"
+    authors:
+      - family-names: Croft
+        given-names: Ayla
+        orcid: "https://orcid.org/0009-0008-9457-2160"
+    year: 2026
+    doi: "10.5281/zenodo.21754763"
+    url: "https://doi.org/10.5281/zenodo.21754762"
+    notes: >-
+      Companion architecture paper; pre-registers this benchmark's primary metric, secondary
+      metrics, attack classes, and falsification criterion. `doi` is the version DOI; `url` is the
+      concept DOI, which resolves to the newest version. The deposit is timestamped
+      2026-08-02T05:34:27Z, after this campaign ran, so it does not corroborate the manuscript's
+      stated 29 July date.
   - type: personal-communication
     title: "Governing Risk with Agents: An Architecture Study of Jido on the BEAM"
     authors:
@@ -44,4 +59,4 @@ preferred-citation:
       orcid: "https://orcid.org/0009-0008-9457-2160"
       affiliation: "ScriptKittyOS"
   year: 2026
-  notes: "arXiv preprint (cs.CR); add the arXiv identifier and DOI once announced."
+  notes: "arXiv preprint, primary category cs.AI, cross-listed cs.CR; add the arXiv identifier and DOI once announced."

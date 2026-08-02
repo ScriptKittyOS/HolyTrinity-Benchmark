@@ -133,7 +133,8 @@ The security-relevant variable is downstream of the model. A proposal is not an 
 question a practitioner needs answered is: \textbf{when the model is compromised and proposes a
 violating action, does that action reach a provider and change external state without a
 valid authorization?} This paper measures that quantity: the \emph{unauthorized-effect rate}, for one implemented system under a targeted adversarial load, and reports it separately from
-the \emph{misbehavior rate}, because the distance between the two is the entire contribution.
+the \emph{misbehavior rate} that the red-teaming literature reports, because the distance between the
+two is the entire contribution.
 
 Our headline result: across 73 trials aimed at specific authorization boundaries (61 attack
 trials plus 12 known-good controls), the agent proposed a violating action in 57 and produced
@@ -219,9 +220,11 @@ database-backed job runtime; real-time operator state uses publish/subscribe. Th
 model-facing agent runtime is a hosted service the BEAM calls as an authenticated API, never
 an interactive developer session; it is \textbf{self-operated} (an internally-built OpenAI-compatible
 service), and it routes to a \textbf{third-party foundation model}, in the evaluated deployment,
-NVIDIA's \texttt{nemotron-3-super-120b-a12b} via the official NVIDIA endpoints. The 57/73 misbehavior
-rate is a property of \emph{that} model at \emph{that} version; a different or more heavily-guarded base
-model would move the misbehavior column but not the invariant the paper measures. The system
+NVIDIA's \texttt{nemotron-3-super-120b-a12b} via the official NVIDIA endpoints. That model identity
+describes the deployment rather than the measurement. The 57/61 violating-input rate is a property
+of the trial design, because the harness injects each violating action at the control-plane boundary
+instead of sampling one from the model (\S6.1). A different or more heavily-guarded base model would
+leave that column unchanged and would not move the invariant the paper measures. The system
 under test is pinned to commit \texttt{79bfd54}. The invariant depends on two runtime properties:
 
 \begin{itemize}
@@ -968,8 +971,11 @@ Widely-cited canonical sources.
   \texttt{nist-p16} and \texttt{nist-p25} identifiers used in \S9.1.)
 \item
   A. Croft. \emph{The Model Proposes, the System Authorizes: An Authority Control Plane for AI
-  Agents on the BEAM.} Manuscript dated 29 July 2026; archival identifier pending.
-  Source in the artifact repository at
+  Agents on the BEAM.} Manuscript dated 29 July 2026. Zenodo,
+  \url{https://doi.org/10.5281/zenodo.21754763} (concept DOI \texttt{10.5281/zenodo.21754762},
+  which resolves to the newest version). The deposit is timestamped 2026-08-02, later than this
+  paper's campaign, so it gives the companion a citable identifier without corroborating the
+  29 July date the manuscript states. Source in the artifact repository at
   \texttt{papers/the-model-proposes-the-system-authorizes.tex}. (Companion
  architecture paper. States the threat model, the security invariant, and the nine mechanisms
  this paper evaluates, and pre-registers this evaluation's primary metric, secondary metrics,
