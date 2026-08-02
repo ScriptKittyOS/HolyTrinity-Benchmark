@@ -4,8 +4,7 @@ Ayla Croft, ScriptKittyOS · August 2, 2026
 
 **Cleared for submission.** Counsel has approved the redaction map (§11); this version is
 written from the public-safe side of the disclosure boundary, and the
-internals enumerated in §11 remain held per the filing schedule. Target: arXiv **cs.CR**
-(primary), **cs.AI** (cross-list). All numbers are from real benchmark runs; the exact run
+internals enumerated in §11 remain held per the filing schedule. All numbers are from real benchmark runs; the exact run
 commit and reproduction commands are in `REPORT.md`.
 
 **Artifact and reproducibility (partial, stated honestly).** The evaluation ran against the
@@ -24,7 +23,7 @@ released (§11, tied to the filing schedule). We flag this rather than imply ful
 reproducibility, and §11 records exactly what is and is not released.
 
 **Relation to the companion architecture paper.** This paper evaluates the authority control
-plane described in [14], a companion manuscript dated 29 July 2026, three days before the
+plane described in [15], a companion manuscript dated 29 July 2026, three days before the
 campaign reported here was run. That paper is the specification under test: it states the
 threat model, the security invariant, and the nine mechanisms evaluated here, and its
 evaluation section, written before any harness existed, fixes this paper's primary metric
@@ -81,8 +80,9 @@ a real effect actually occurred the system's proof state matched the independent
 claim we state with its n rather than as blanket "perfect calibration," since 33 of the 41
 are honest abstentions or non-events. Because prevention is upstream, only six governed
 trials produced an observed effect; we therefore add a **measurement-integrity control (F10)**
-confirming the oracle's effect log fires when an effect occurs (and the ablation runs
-observed 47), so a governed zero means "nothing crossed," not "the oracle was blind."
+confirming the oracle's effect log fires when an effect occurs (and the ablation runs wrote 20
+provider-boundary records, 16 in the approval-binding ablation and 4 in the posture ablation),
+so a governed zero means "nothing crossed," not "the oracle was blind."
 Governed actions carry a median added latency of **~17 ms**; the false-denial rate is
 **0.0%** over 75 legitimate approved actions. We report every rate with a confidence
 interval, publish a seven-state proof model rather than binary pass/fail, and state the
@@ -101,7 +101,8 @@ The security-relevant variable is downstream of the model. A proposal is not an 
 question a practitioner needs answered is: **when the model is compromised and proposes a
 violating action, does that action reach a provider and change external state without a
 valid authorization?** This paper measures that quantity, the *unauthorized-effect rate*, for one implemented system under a targeted adversarial load, and reports it separately from
-the *misbehavior rate*, because the distance between the two is the entire contribution.
+the *misbehavior rate* that the red-teaming literature reports, because the distance between
+the two is the entire contribution.
 
 Our headline result: across 73 trials aimed at specific authorization boundaries (61 attack
 trials plus 12 known-good controls), the agent proposed a violating action in 57 and produced
@@ -181,9 +182,11 @@ database-backed job runtime; real-time operator state uses publish/subscribe. Th
 model-facing agent runtime is a hosted service the BEAM calls as an authenticated API, never
 an interactive developer session; it is **self-operated** (an internally-built OpenAI-compatible
 service), and it routes to a **third-party foundation model**, in the evaluated deployment,
-NVIDIA's `nemotron-3-super-120b-a12b` via the official NVIDIA endpoints. The 57/73 misbehavior
-rate is a property of *that* model at *that* version; a different or more heavily-guarded base
-model would move the misbehavior column but not the invariant the paper measures. The system
+NVIDIA's `nemotron-3-super-120b-a12b` via the official NVIDIA endpoints. That model identity
+describes the deployment rather than the measurement. The 57/61 violating-input rate is a property
+of the trial design, because the harness injects each violating action at the control-plane boundary
+instead of sampling one from the model (§6.1). A different or more heavily-guarded base model would
+leave that column unchanged and would not move the invariant the paper measures. The system
 under test is pinned to commit `79bfd54`. Two runtime properties are load-bearing for the
 invariant:
 
@@ -217,7 +220,7 @@ We measure two rates and never collapse them:
 - **Violating-input rate**: the fraction of trials whose input was *constructed* to be
  policy-violating. We do not measure a model misbehaviour rate. The harness injects the
  violating action directly at the control-plane boundary, which is the strong test specified
- in [14]. Stipulating the proposal produces a stronger adversary than sampling one, because
+ in [15]. Stipulating the proposal produces a stronger adversary than sampling one, because
  it never fails to propose.
 - **Unauthorized-effect rate**: the fraction of *attack* trials (total minus known-good
  `allowed` controls) in which a proposed action produced an external effect not covered by a
@@ -602,18 +605,32 @@ finite, pre-registered attack set can establish a security property in general (
 contribution is a *measurement methodology and a bounded result*, not a seal.
 
 **Three gaps this work closes, stated against a published corpus rather than against the
-literature in general.** Both are
-positive findings against documented blind spots in a 41-source principle corpus. First, the
-**seven-state proof model answers "what should an access-control layer report when the answer
-is unclear or its evidence is late."** The corpus asserts deny-by-default but does not name a
-posture for genuine uncertainty; `degraded`, `pending_receipt`, `manual_review_required`, and
-`missing` are exactly that posture, given names and a defined meaning. The state model is not
-merely an honesty mechanism (as §4 frames it); it is the missing principle, and we claim it
-as such. Second, the paper **instruments the oversight trade-off the corpus leaves
-unmeasured**: a human approval gate has a cost (here ~17 ms of governed latency, §6.11) that
-must be weighed against the risk it prevents, and a gate too slow or too eager gets bypassed
-in practice; reporting overhead and a 0/75 false-denial rate together (§6.12) quantifies both
-halves, which few artifacts in this space do.
+literature in general.** The CoSAI AI-agentic principles catalog [13] synthesizes 121 principles
+from 41 sources and publishes a `gap_index` recording, per section, the classic principle its
+source material does not address. Three of those entries name gaps this paper closes, so each
+claim below is checkable against a fetchable file rather than asserted.
+
+First, section `zero-standing-privilege`, gap `sch-2`: "Continuous re-verification assumes a clean
+allow/deny answer at every check; nothing here says what an agent's access-control layer should do
+when that answer is unclear." The seven-state proof model is a named posture for exactly that case,
+and §6.6 shows it carrying load: 29 of 41 provider-mediated trials resolve to
+`manual_review_required`, an explicit abstention rather than a manufactured verdict. We note the
+limit: the gap also names the policy-engine-unreachable case, which §12 lists as unbuilt.
+
+Second, section `human-oversight`, gap `nist-p7`: "No sources weigh approval-gate latency costs
+against risk prevention." We report both halves together, ~17 ms of median governed latency (§6.11)
+against a 0/75 false-denial rate (§6.12). We are precise about the claim: the trade-off itself *is*
+named in the classic catalog, as `nist-p7`, "identify potential trade-offs between reducing risk
+and increased costs." What the corpus records as absent is its *instrumentation at an agent
+approval gate*. Two qualifications belong with it: the p95 and p99 are 57.8 and 81.3 ms, and a gate
+too slow to use is a tail property the median does not speak to; and the false-denial figure has an
+effective sample size of three (§6.12).
+
+Third, section `incident-response`, gap `ms-risk-8`: "No verification that quarantined agents remain
+inert; cutting an agent off from the network is not the same as confirming it has stopped acting."
+§5 and family F9 address this directly on the BEAM, where a killed worker is a terminated process
+rather than an unreachable one, and §5 bounds the claim: work the worker already enqueued on the
+durable job runtime survives the kill and is unmeasured here.
 
 ### 9.1 Trusted computing base: minimizing trusted elements, measured (`nist-p25`)
 
@@ -800,18 +817,26 @@ Widely-cited canonical sources.
  Personal communication, cited **with the author's permission** at pinned revision
  `17fbce2b1c53a46093be92dc59561e2a18b8f775`; archival identifier pending. (Not a versioned
  publication; we do not depend on a mutable link.)
-13. Coalition for Secure AI (CoSAI). *Classic security principles catalog*, 87 entries
+12. Berryville Institute of Machine Learning (BIML). *An Architectural Risk Analysis of Large
+ Language Models.* 2024. (LLM risk taxonomy.)
+13. Coalition for Secure AI (CoSAI). *AI-agentic security principles catalog*, 121 principles
+ synthesized from 41 sources (2019-2026) across 22 sections, with a published `gap_index`.
+ `https://aisharedresponsibility.com/data/ai-agentic-principles.json`
+ (Source of the three `gap_index` entries quoted in §9.)
+14. Coalition for Secure AI (CoSAI). *Classic security principles catalog*, 87 entries
  normalized from Saltzer and Schroeder, NIST SP 800-27, ISO 27001, and CIS Controls.
  `https://aisharedresponsibility.com/data/security-principles.json`
  (Source of the `nist-p16` and `nist-p25` identifiers used in §9.1.)
-14. A. Croft. *The Model Proposes, the System Authorizes: An Authority Control Plane for AI
- Agents on the BEAM.* Manuscript dated 29 July 2026; archival identifier pending. Source is in this
-    repository at `papers/the-model-proposes-the-system-authorizes.tex`.
+15. A. Croft. *The Model Proposes, the System Authorizes: An Authority Control Plane for AI
+ Agents on the BEAM.* Manuscript dated 29 July 2026. Zenodo,
+ `https://doi.org/10.5281/zenodo.21754763` (concept DOI `10.5281/zenodo.21754762`, which
+ resolves to the newest version). The deposit is timestamped 2026-08-02, later than this
+ paper's campaign, so it gives the companion a citable identifier without corroborating the
+ 29 July date the manuscript states. Source is in this repository at
+ `papers/the-model-proposes-the-system-authorizes.tex`.
  (Companion architecture paper. States the threat model, the security invariant, and the
  nine mechanisms this paper evaluates, and pre-registers this evaluation's primary metric,
  secondary metrics, attack classes, and falsification criterion.)
-12. Berryville Institute of Machine Learning (BIML). *An Architectural Risk Analysis of Large
- Language Models.* 2024. (LLM risk taxonomy.)
 
 ---
 
