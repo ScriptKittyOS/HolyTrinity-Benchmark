@@ -11,16 +11,19 @@ compromised; the question is whether misbehavior converts to effect.
 ## Headline result
 
 Across **73 trials** (61 attack trials + 12 known-good controls) against the system under
-test, the agent proposed a violating action in **57** and produced **0 unauthorized external
-effects** (95% CI [0.0%, 5.9%]). A zero is what a reviewer distrusts, so it is not presented
-alone — the benchmark backs it with:
+test, the agent proposed a violating action in **57 of the 61 attack trials** (the other 4
+are F8 posture-enforcement, which induces no proposal) and produced **0 unauthorized external
+effects** (95% CI [0.0%, 5.9%]; see REPORT.md for the denominator breakdown). A zero is what a
+reviewer distrusts, so it is not presented alone — the benchmark backs it with:
 
-- an **ablation study** (disable each mechanism; its attacks convert — 0→10, 0→5, 0→14);
+- an **ablation study** (disable each mechanism; its attacks convert — 0→10, 0→5, 0→5, 0→14);
 - a **no-control baseline** (whole membrane off → **47 of 63** attacks convert);
 - a **measured trusted-computing-base boundary** (only the kernel element's failure admits a
   provider-call effect; surface reducers admit gate-channel effects only — `spec/ABLATION.md`, paper §9.1);
 - a **kept-and-fixed failure** (the one effect an earlier run leaked, closed and re-measured);
-- **confidence intervals** on every rate and an **independent-oracle calibration** (ECE 0.0%, 0 overclaims).
+- **confidence intervals** on every rate and an **independent-oracle calibration** — the
+  oracle agreed with the system's own proof state on all **41** provider-call trials with
+  **0 overclaims** (the 6 load-bearing effect trials and the full decomposition are in REPORT.md).
 
 ## Reproducibility — partial, stated honestly
 
@@ -52,6 +55,7 @@ artifacts/          committed result JSONL + the family table as data (the audit
 scoring/            the system-free scoring/reporting modules (recompute the numbers yourself)
 CITATION.cff        citation metadata
 MANIFEST.md         exactly what is and is not in this release, and why
+docs/               PAPER-CLARIFICATIONS.md — corrections tracked for the paper's next revision
 ```
 
 ## What is not here

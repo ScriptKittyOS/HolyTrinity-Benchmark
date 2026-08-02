@@ -62,6 +62,30 @@ intervals remain the load-bearing honesty: F4 (n=27) bounds the rate below ~12%;
 gate/quorum families bound it only loosely (F5 ≤75%, F9 uninformative alone) — the
 quantitative form of SPEC §9's "families we could not attack well, and why."
 
+**What the 61 denominator is made of (and the stricter reading).** The 61 attack trials are
+**57 induced-violation trials** (F1–F6, F9 — a violation was proposed) **plus 4 F8
+posture-enforcement trials**. Every F8 trial drives a *validly-approved* write, so its
+`oracle_verdict` is always `authorized` (confirmed in the JSONL): F8 is structurally unable to
+produce an *unauthorized* effect. It is included in the 61 as an attack on the posture
+boundary (its outcome is `prevented`, not the `allowed` used for controls), but a reader who
+wants the denominator restricted to trials that *could* yield an unauthorized effect should
+use **0 / 57 → 95% CI [0.0%, 6.3%]** (Wilson). We report the broader **0 / 61 → [0.0%, 5.9%]**
+as the all-attack-trials figure and state the 0/57 here so the choice is transparent, not
+buried. (F7's 4 replays are already excluded as `allowed` controls; F8 is the one non-inducing
+family inside the 61 — this note removes the F7/F8 asymmetry a reader would otherwise flag.)
+
+**The 12 `allowed` controls, mapped to families** (73 − 61): F1 ×1 (`known-good-released-content`),
+F2 ×3 (`known-good-runtime-payload`, `benign:secret-readiness-metadata`,
+`benign:read-only-project-summary`), F3 ×2 (`known-good-safe-skill`, `benign:approval-aware-followup`),
+F4 ×2 (`known-good-authorized`, `canon:string-keys-equivalent`), F7 ×4 (the four idempotent
+retries). That is 1+3+2+2+4 = **12**; F8 contributes **0** controls (all four F8 trials are
+`prevented`). Every one carries `oracle_verdict: authorized`.
+
+**On the interval columns.** The Wilson columns are **two-sided 95% intervals**; the
+`rule-of-3 ≤ x%` annotations are the **one-sided 95% upper bound** `3/n` (the standard
+rule-of-three for 0 events, clamped to 100%). They are labeled distinctly on purpose; do not
+read a `rule-of-3` value as a two-sided interval.
+
 ## Ablation study — the causal spine
 
 Full detail + interpretation in `ABLATION.md`. Reproduce:
@@ -224,7 +248,7 @@ honest split: **seven induced-violation families (F1–F6, F9), one posture-enfo
 
 ## Overhead (SPEC §6)
 ```text
-── overhead (SPEC §6; n=200 per path; mock adapters; microseconds) ──
+── governed-action latency (SPEC §6; n=200; mock adapters; microseconds) ──
   path        p50        p95        p99
   governed       16882      57811      81277
   bypassed           0          0          0
@@ -232,13 +256,26 @@ honest split: **seven induced-violation families (F1–F6, F9), one posture-enfo
   hardware: 32 schedulers, OTP 28, ERTS 16.1.1
 ```
 
+**Read this as governed latency, not a validated differential.** The `bypassed` path here is
+a near-no-op (a mock adapter call with the membrane skipped) and registers ~0 µs at every
+percentile — it does *not* do the same dispatch/serialization work, so it is not a fair
+baseline, and "added" is therefore just "governed" relabeled. The honest figure is the
+**governed-action latency** itself (p50 ≈ 17 ms, dominated by durable authority-proof
+persistence). A true differential — a bypassed path doing the identical mock round-trip minus
+only the membrane — is future work; we do not claim a measured membrane overhead beyond the
+governed latency reported here.
+
 ## False denials (SPEC §6)
 ```text
 ── false denials (SPEC §6; synthetic legitimate actions; n=75) ──
   allowed:        75
   false denials:  0
-  rate:           0.0%
+  rate:           0.0%   (95% CI [0.0%, 4.9%]; rule-of-3 ≤ 4.0%)
 ```
+
+n=75 is a synthetic legitimate-action baseline, not a production soak: 0/75 bounds the true
+false-denial rate below ~4.9% (Wilson, two-sided) — "0%" is the point estimate, not a
+guarantee. A soak-derived rate is future work.
 
 ## Kept failures — and their fixes (SPEC §10)
 

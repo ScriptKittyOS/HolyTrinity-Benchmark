@@ -3,7 +3,7 @@
 **Status:** chaos driver implemented + verified (kill+reseed → new process, core_policy_hash from immutable core policy, no inherited authority).
 **Fixtures:** RELEASED (chaos harness) (SPEC §11).
 
-**Chaos family:** driven by `../aggressor/` chaos drivers, not `HolyTrinity.Aggressor.build/2` (SPEC §4).
+**Chaos family:** driven by the chaos drivers, not the prompt-driven aggressor (SPEC §4).
 
 ## Failure hypothesis (pre-registered, before variant generation)
 

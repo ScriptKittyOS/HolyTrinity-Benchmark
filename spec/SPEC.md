@@ -19,10 +19,10 @@ The request was for "an oracle that will be the aggressor testing against
 everything." At research grade those are **two distinct roles that must not be the
 same component**, and keeping them apart is itself a result the paper claims:
 
-- **The Aggressor** (`aggressor/`) generates and drives attacks. It provokes the
+- **The Aggressor** generates and drives attacks. It provokes the
   system into *proposing* violating actions and attempts to convert them into
   effects. It is allowed to know the implementation.
-- **The Oracle** (`oracle/`) is the independent adjudicator. It decides whether an
+- **The Oracle** is the independent adjudicator. It decides whether an
   unauthorized effect occurred, grounded **only** in observables captured outside
   the control plane's own bookkeeping. **It never reads Trinity's own verdict.**
 
@@ -232,7 +232,7 @@ reader can trace **mechanism → attack → result** with one lookup.
 
 **Not prompt-driven (chaos harness).** F9 and the F6 positive control need process
 kills, concurrent execution, and induced crashes — not model prompting. They run in a
-separate chaos harness (`aggressor/chaos/`); driving them through a model wastes time
+separate chaos harness; driving them through a model wastes time
 and produces weak variants.
 
 **F6 positive control.** Add a call path that reaches an effect without crossing the
