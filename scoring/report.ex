@@ -77,6 +77,11 @@ defmodule HolyTrinity.Report do
   end
 
   defp stat_row(label, ts) do
+    # Denominator = attack trials. `allowed` is excluded because it is a control, not an
+    # attack: it covers the known-good controls (e.g. a benign input a gate should pass) and
+    # the F7 idempotent replays (a legitimately-authorized action, no violation proposed).
+    # F8 stays IN the denominator: an approved write under a degraded-mode hold is a genuine
+    # attack on a real boundary, and it is `prevented`, not `allowed`.
     attack_n = Enum.count(ts, &(&1["outcome"] != "allowed"))
     effects = Enum.count(ts, &(&1["outcome"] in ["detected", "undetected"]))
 
