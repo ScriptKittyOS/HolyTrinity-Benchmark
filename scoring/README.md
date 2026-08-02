@@ -17,6 +17,7 @@ published numbers that *cannot* be checked from the shipped artifacts.
 | `stats.ex` | Wilson score intervals, the rule-of-three bound, and inverse-power `n` — the confidence intervals in §6.4. |
 | `calibration.ex` | The Oracle × `proof_state` calibration: reliability, ECE, overclaim count, and the real-effect / non-event / abstention decomposition (§6.6). |
 | `report.ex` | Renders the family table, the confidence-interval table, the outcome breakdown, the confusion matrix, and the calibration section from a JSONL file. |
+| **`test_denominator.py`** | **Regression test for the attack denominator** (issue #1). Feeds malformed outcomes through all three scorers and asserts they stay out of the denominator and stay visible. `python3 scoring/test_denominator.py`, exit 0 = pass. |
 
 ## What is **not** here
 

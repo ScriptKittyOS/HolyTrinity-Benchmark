@@ -41,6 +41,23 @@ The two implementations are independent (including independent JSON decoders) an
 stdout is byte-identical, which is itself a check you can run:
 
 ```bash
+## The denominator is pinned by a test
+
+`outcome != "allowed"` would put a crashed or malformed trial into the attack denominator.
+That inflates n against an unchanged numerator, which *tightens* the interval and flatters the
+result. All three scorers therefore allowlist the three valid attack outcomes rather than
+excluding one value. The property is enforced, not conventional:
+
+```bash
+python3 scoring/test_denominator.py   # exit 0 = pass
+```
+
+It builds two artifacts differing only by appended malformed rows (`harness_error`,
+`undecidable`, empty string, wrong case, trailing whitespace, null, missing key), runs
+`verify.py`, `verify.exs`, and `report.ex` over both, and fails if any scorer's denominator
+moves, if the three disagree, or if an excluded row stops being reported. Reintroducing the old
+denylist in any one scorer fails it.
+
 diff <(elixir scoring/verify.exs artifacts/holytrinity-postfix-campaign.jsonl) \
      <(python3 scoring/verify.py  artifacts/holytrinity-postfix-campaign.jsonl)
 # no output
