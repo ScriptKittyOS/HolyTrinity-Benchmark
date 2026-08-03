@@ -50,8 +50,8 @@ references:
       metrics, attack classes, and falsification criterion. `doi` is the **concept** DOI, which
       resolves to whatever the current version is — cite it unless you mean one specific version.
       The v1.1 version DOI, which pins the exact deposit this repository's
-      `papers/the-model-proposes-the-system-authorizes.tex` is 10.5281/zenodo.21764616, which no
-      longer matches: a re-deposit is pending;
+      `papers/the-model-proposes-the-system-authorizes.tex` matches, is 10.5281/zenodo.21780755 (v1.2);
+      superseded deposits are 10.5281/zenodo.21764616 and 10.5281/zenodo.21754763;
       the superseded v1.0 deposit is 10.5281/zenodo.21754763. The earliest deposit is timestamped
       2026-08-02T05:34:27Z, after this campaign ran, so it does not corroborate the manuscript's
       stated 29 July date.
@@ -76,6 +76,6 @@ preferred-citation:
     Deposited on Zenodo under CC-BY-4.0. `doi` is the **concept** DOI, which resolves to whatever
     the current version is — cite it unless you mean one specific version. The v1.1 version DOI,
     which pins the exact deposit this repository's
-    `papers/authority-bound-agentic-execution.tex` matches, is 10.5281/zenodo.21780658; the
-    superseded deposits are 10.5281/zenodo.21764581 and 10.5281/zenodo.21755870. Also submitted to arXiv with primary
+    `papers/authority-bound-agentic-execution.tex` matches, is 10.5281/zenodo.21780930 (v1.2); the
+    superseded deposits are 10.5281/zenodo.21780658, 10.5281/zenodo.21764581 and 10.5281/zenodo.21755870. Also submitted to arXiv with primary
     category cs.AI, cross-listed cs.CR, cs.DC and cs.SE; add the arXiv identifier once announced.

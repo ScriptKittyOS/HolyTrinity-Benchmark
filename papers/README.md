@@ -9,10 +9,11 @@ the architecture and specifies the evaluation, the second runs it.
 | `authority-bound-agentic-execution.tex` | [`../PAPER.md`](../PAPER.md) | **Authority-Bound Agentic Execution: Measuring Unauthorized Effect Under Adversarial Load** | 2 August 2026 |
 
 **Read the Markdown; keep the LaTeX.** The `.tex` files in this directory are the archival record
-— the deposited Zenodo versions hold exactly these files, verified by hash, and they are the arXiv
-submission sources. They are not the copies you are meant to read: GitHub renders LaTeX as plain
-text with the markup left in. The Markdown renderings at the repository root are for reading, and
-the rest of the documentation links to them.
+— they are what the Zenodo v1.2 deposits hold and what was submitted to arXiv. Their sha256 digests
+are in **Status** below, so the correspondence between this directory and the archive is something
+you can check rather than something you have to take on trust. They are not the copies you are
+meant to read: GitHub renders LaTeX as plain text with the markup left in. The Markdown renderings
+at the repository root are for reading, and the rest of the documentation links to them.
 
 Both `.tex` files compile with `pdflatex` alone: no `.bib`, no figures, no external inputs. No
 compiled PDFs ship, and the machine these were last revised on had no LaTeX toolchain, so the page
@@ -55,31 +56,29 @@ than taking on trust. Two things make it checkable, and a third bounds it:
 
 Both papers are deposited on Zenodo as preprints under CC-BY-4.0.
 
-| Paper | Concept DOI (cite this) | Latest deposit | Matches this directory? |
+| Paper | Concept DOI (cite this) | Latest deposit | sha256 of the deposited `.tex` |
 |---|---|---|---|
-| The Model Proposes, the System Authorizes | `10.5281/zenodo.21754762` | `10.5281/zenodo.21764616` | **no — re-deposit pending** |
-| Authority-Bound Agentic Execution | `10.5281/zenodo.21755869` | `10.5281/zenodo.21780658` | yes |
+| The Model Proposes, the System Authorizes | `10.5281/zenodo.21754762` | `10.5281/zenodo.21780755` (v1.2) | `cde2d493f80be2e76831d39983514e72ca3d2ddfdc791f4918692c88b36dcfff` |
+| Authority-Bound Agentic Execution | `10.5281/zenodo.21755869` | `10.5281/zenodo.21780930` (v1.2) | `a047cc1ed91c8f977e8fdeeb7c9b17eced6a097070f7ef12a9e724eede0ca90f` |
 
 Cite the concept DOI unless you mean one specific version; it resolves to whatever the current
 version is.
 
 **On the correspondence between the archive and this directory, stated exactly.** Zenodo records
 are immutable once published: a deposit's files cannot be edited, only superseded by a new version.
-So the archive tracks this directory only as fast as new versions are minted, and right now the two
-papers are in different states.
+So the archive tracks this directory only as fast as new versions are minted, and a claim that the
+two agree is worth nothing unless you can check it. The hashes above are how you check it — take
+the `.tex` from the Zenodo record and run `sha256sum` on it. Both v1.2 deposits were made from the
+files in this directory as of repository commit `3751920`.
 
-`10.5281/zenodo.21780658` is the current deposit of the evaluation paper and holds
-`authority-bound-agentic-execution.tex` as it stands here. It supersedes `10.5281/zenodo.21764581`,
-which predates the corrections in `../CHANGELOG.md` — three published figures moved (the F5
-ablation, the no-control ceiling, and the governed-latency percentiles) and several claims were
-narrowed. Do not quote the superseded version for any of them.
-
-`the-model-proposes-the-system-authorizes.tex` has since changed too — Appendix B's reviewers' note
-no longer says the paper has no measured results, because the companion evaluation now exists and
-is reported in §11 and §12, and that evaluation is now a numbered reference rather than four
-uncited mentions of "reported separately". **The latest deposit, `10.5281/zenodo.21764616`, does
-not contain those changes.** Until a new version is minted, cite the concept DOI and read the
-source here for the current text.
+Earlier deposits are superseded and should not be quoted. For the evaluation paper,
+`10.5281/zenodo.21780658` was uploaded from a stale working copy and carries figures this release
+retracted — the `~17 ms` latency, the `47 of 63` no-control ceiling, the `31 preflight + 4 posture`
+denial split, and F5 as a `0 -> 0` null described as "enforced redundantly". It is superseded by
+`21780930`. `10.5281/zenodo.21764581` predates the corrections entirely. For the architecture
+paper, `10.5281/zenodo.21764616` predates three fixes: the Appendix B reviewers' note, the
+companion evaluation's entry in the bibliography, and the two-person ablation row in the §11
+summary.
 
 The v1.0 deposits (`10.5281/zenodo.21754763` and `10.5281/zenodo.21755870`) hold the original
 pre-correction drafts and are superseded twice over; do not quote them.
