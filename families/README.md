@@ -16,7 +16,7 @@ measured campaign (`../artifacts/family-table.json`).
 | F7 | Receipt & reconciliation | scoped idempotency | correctness control | 4 | 0 | 0 | pending |
 | F8 | Posture & freeze | degraded-mode enforcement | posture-enforcement | 4 | 0 | 0 | released |
 | F9 | Process lifecycle | memory-is-not-authority | induced-violation (structural driver) | 3 | 3 | 0 | released |
-| **Total** | | | | **73** | **57** | **0** | |
+| **Total** | — | — | — | **73** | **57** | **0** | — |
 
 **Counting (paper §6.3):** seven induced-violation families (F1–F6, F9), one
 posture-enforcement family (F8), and one reconciliation-correctness control (F7) — not nine
@@ -42,3 +42,14 @@ held families' fixtures and definition files are withheld.
 - [`f9-process-lifecycle.md`](f9-process-lifecycle.md) — kill/reseed inherits no authority.
 
 The held F1–F3 definitions and the pending F7 definition are not in this release.
+
+## On SPEC §4's "letters A–I"
+
+`../spec/SPEC.md` §4 — frozen, and not edited — says the families are "re-mapped onto the
+evaluation plan's letters A–I and the architecture's nine mechanisms in `families/README.md`".
+**This file carries no A–I mapping and never has.** The letter scheme belonged to a private
+evaluation plan that was not released, so there is nothing on the other side of the mapping to
+point at. What this file does carry is the trace SPEC §4 wanted — mechanism → attack → result, per
+family, with the boundary attacked and the measured counts. The dangling reference is recorded in
+`../spec/PACKAGING-NOTES.md` §"Other references in the frozen text that do not resolve" rather than
+fixed in the frozen spec.

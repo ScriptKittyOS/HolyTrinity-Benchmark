@@ -13,7 +13,7 @@ provenance is checkable, not so the campaign can be re-executed today.
 | `ablation_study.ex` | The per-mechanism ablation and the no-control baseline (paper §6.5). |
 | `measurement_integrity.ex` | The F10 controls — does the effect log fire when an effect occurs, and what is invisible to it (paper §6.7). |
 | `blind_set.ex` | Compiles a declarative attack file from `../blind/` into real trials and scores them through the same Oracle (paper §6.9). |
-| `overhead.ex` | Governed vs bypassed latency percentiles (paper §6.11). |
+| `overhead.ex` | **Absolute governed latency** percentiles, against a no-I/O adapter floor (paper §6.11). Read them as the cost of the governed path, not as an overhead differential — see the note below. |
 | `false_denials.ex` | The synthetic legitimate-action baseline (paper §6.12). |
 | `holytrinity.run.ex` | The `mix holytrinity.run` task — the entry point for every campaign. |
 
@@ -33,15 +33,26 @@ Step 5 happens after step 4 by construction. The `proof_state` is never an input
 
 ## Reading the numbers these produce
 
-Every campaign writes JSONL. Two of those files ship, in `../artifacts/`, and
-`../scoring/verify.py` (or `verify.exs`) recomputes every published campaign number from them and
-exits non-zero on any disagreement.
+Every campaign writes JSONL. The two campaign files ship in `../artifacts/`, and
+`../scoring/verify.py` (or `../scoring/verify.exs`) recomputes every published campaign number from
+them and exits non-zero on any disagreement.
 
-**The other runs' per-trial records do not ship.** The ablation and trusted-computing-base tables,
-the no-control ceiling, the overhead percentiles, the false-denial rate, the F10 controls, and the
-blind-set result are each produced by a separate run whose JSONL is not in this release. Those
-figures are reported in `../REPORT.md` and are **not** independently auditable from this repository.
-`../scoring/VERIFY.md` lists the split precisely.
+**Every driver in the table above now ships its run's per-trial records**, in `../artifacts/`:
+`ablation/tcb-F*.jsonl` and `ablation-study.jsonl` (`ablation_study.ex`), `baseline.jsonl` (the
+no-control arm of the same module), `compound.jsonl`, `tcb-full-catalog.jsonl` (four full-catalog
+probes, 292 records; the superseded per-family probe run is kept beside it as
+`ablation/tcb-per-family-probes.jsonl`), `overhead.jsonl` (one record per iteration per arm),
+`false-denials.jsonl`, `measurement-integrity.jsonl`, and `blind.jsonl`. Earlier revisions of this file listed most of these among the unauditable ones; that
+is no longer true, and the list is corrected rather than quietly dropped.
+
+Every published figure therefore recomputes from a committed artifact. What the artifacts do not
+settle is **scope**: §9.1 removes each element singly and never in combination, F6/F7/F9 have no
+runtime toggle and are never ablated, and the membrane and durable authority store have no ablation
+row at all. `../scoring/VERIFY.md` lists the split it checks.
+
+**Read each file's `_meta.caveat` before citing it.** `tcb-full-catalog.jsonl`'s states the scope
+above; `false-denials.jsonl`'s notes that 75 rows are 3 configurations × 25 repeats; and
+`overhead.jsonl`'s notes that the two arms are unpaired series on one machine.
 
 ## Two behaviours worth knowing about before you read the results
 
@@ -53,6 +64,17 @@ figures are reported in `../REPORT.md` and are **not** independently auditable f
   visible rather than silently dropped. `../scoring/report.ex` excludes them from the attack
   denominator — a trial that did not complete must never tighten a bound — and prints them in the
   outcome block with a total. No harness errors occurred in the published campaign (61 + 12 = 73).
+- **`overhead.ex` measures absolute governed latency, not an overhead differential.** The comparison
+  arm is degenerate: it times `MockStripe.execute/3`, a pure in-memory function whose measured p50 is
+  **120 ns**, roughly 0.0006% of a governed path in the tens of milliseconds. Printed at microsecond
+  resolution that floor truncates to a literal **0 µs at p50 and p95** (and 3 µs at p99), so the
+  published "added latency" was the governed latency relabelled. The 120 ns is the point: the old
+  `0 µs` was a timer-resolution floor, not a measurement, and `../artifacts/overhead.jsonl` now
+  carries the real nanosecond distribution behind it. Higher resolution does not rescue the
+  difference — and the subtraction was not paired in any case, being a difference of order
+  statistics between two independent series rather than a distribution of per-call deltas. Read the
+  percentiles as **the absolute cost of the governed path measured against a no-I/O adapter floor**,
+  on one machine; the module's own `@moduledoc` states the same and no longer reports an `added` row.
 
 ## Reproduction
 

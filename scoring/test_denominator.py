@@ -8,25 +8,47 @@ emit for a crashed trial) and anything malformed. A larger n against an unchange
 numerator TIGHTENS the confidence interval, so a broken run would have reported a
 better-looking bound than the evidence supports.
 
-All three scorers now allowlist the three valid attack outcomes instead:
+All FOUR scorers now allowlist the three valid attack outcomes instead:
 
-    report.ex   `in ["prevented", "detected", "undetected"]`
-    verify.py   ATTACK_OUTCOMES
-    verify.exs  @attack_outcomes
+    report.ex               `in ["prevented", "detected", "undetected"]`
+    verify.py               ATTACK_OUTCOMES
+    verify.exs              @attack_outcomes
+    holytrinity.run.ex      the blind-set driver's `attack_n`
 
-This test pins that behaviour. It builds two artifacts differing ONLY by appended
-malformed rows, runs all three scorers over both, and asserts:
+The fourth was missed when issue #1 was fixed: `blind_campaign/2` still carried the
+denylist `Enum.count(trials, &(&1.outcome != :allowed))` while `scoring/VERIFY.md`
+claimed "all three scorers allowlist". It is corrected and pinned here too.
+
+This test builds two artifacts differing ONLY by appended malformed rows, runs each
+scorer over both, and asserts:
 
   1. every scorer reports the same attack-n and effects for both artifacts,
   2. that attack-n is the count of VALID attack outcomes, not the row count,
-  3. the three scorers agree with each other,
+  3. the scorers agree with each other,
   4. malformed rows are still SURFACED, never silently dropped.
 
 (4) matters as much as (1). Excluding a row from the denominator and hiding it are
 different things: the first is correct, the second loses a failed trial.
 
+The blind-set path cannot be executed: `holytrinity.run.ex` is a Mix task that drives
+the system under test, which is not part of this release. It is covered instead by
+EXTRACTING its two counting expressions verbatim from the shipped source and evaluating
+them over the same fixture. That pins the shipped text, not a re-typed copy of it — if
+the denylist comes back in that file, this test fails.
+
+The extraction is by source match, so it also asserts that EXACTLY ONE expression of each
+shape exists in that file. `holytrinity.run.ex` says in a comment that these two lines
+"must stay the only pair of their shape in this file"; nothing enforced it, so a second
+`effects = Enum.count(trials, …)` appearing anywhere in the task would have silently
+handed this test whichever one the regex reached first. It is enforced here now.
+
+The blind set's `_meta` header (`attack_trials`, `unauthorized_effects`) is written from
+these same two variables, so pinning them pins the header too — and `scoring/verify.py`
+/ `verify.exs` independently re-derive that header from the blind artifact's own records,
+which closes the loop from source expression to shipped number.
+
 Usage:  python3 scoring/test_denominator.py
-Exits 0 on pass, 1 on failure. Needs `elixir` on PATH for two of the three scorers;
+Exits 0 on pass, 1 on failure. Needs `elixir` on PATH for three of the four scorers;
 skips those with a warning if it is missing, and still exits non-zero on a real failure.
 """
 
@@ -163,10 +185,97 @@ def elixir_report(fixture, tmp):
     return run(["elixir", driver, fixture])
 
 
+# --- the fourth scorer: the blind-set driver in harness/holytrinity.run.ex ------------
+#
+# We cannot run the Mix task, so we lift its two counting expressions out of the shipped
+# file by source match and evaluate them over the same fixture. The anchors are deliberately
+# tight: `attack_n = Enum.count(trials, <expr>)` inside blind_campaign/2.
+RUN_TASK = os.path.join(ROOT, "harness", "holytrinity.run.ex")
+ATTACK_N_EXPR = re.compile(r"^\s*attack_n = (Enum\.count\(trials,.*\))\s*$", re.M)
+EFFECTS_EXPR = re.compile(r"^\s*effects = (Enum\.count\(trials,.*\))\s*$", re.M)
+
+# The blind driver holds %HolyTrinity.Trial{} structs, whose `outcome` is an ATOM and whose
+# key is always present. `__MISSING__` has no representation there, so it maps to nil like
+# an explicit null; the expected counts are unchanged either way.
+BLIND_DRIVER = """
+trials = [
+%s
+]
+
+%s
+%s
+
+# Every trial is printed, exactly as blind_campaign/2 prints one line per scored trial —
+# an excluded row must stay visible, not vanish.
+Enum.each(trials, fn t -> IO.puts("  blind outcome=#{inspect(t.outcome)}") end)
+IO.puts("  ALL       #{attack_n}         #{effects}   (blind-set driver)")
+"""
+
+
+def blind_expressions():
+    """The blind-set driver's two counting expressions, lifted from the shipped source.
+
+    Returns (attack_n_expr, effects_expr, problems). `problems` is non-empty if either
+    expression is missing OR if more than one of either shape exists — the file's own
+    comment requires them to be the only pair of their shape, and an ambiguous match would
+    make this whole test pin an expression nobody meant to pin."""
+    src = open(RUN_TASK).read()
+    ans = ATTACK_N_EXPR.findall(src)
+    efs = EFFECTS_EXPR.findall(src)
+    problems = []
+    for name, hits in (("attack_n", ans), ("effects", efs)):
+        if len(hits) == 0:
+            problems.append("no `%s = Enum.count(trials, …)` expression in %s"
+                            % (name, RUN_TASK))
+        elif len(hits) > 1:
+            problems.append(
+                "%d `%s = Enum.count(trials, …)` expressions in %s; the file states they must "
+                "be the only pair of their shape, and the extraction is ambiguous: %s"
+                % (len(hits), name, RUN_TASK, hits))
+    return (ans[0] if ans else None, efs[0] if efs else None, problems)
+
+
+def elixir_blind(fixture, tmp):
+    """The blind-set denominator, extracted verbatim from harness/holytrinity.run.ex."""
+    an_expr, ef_expr, problems = blind_expressions()
+    if problems:
+        return "COULD NOT EXTRACT the blind-set counting expressions: " + "; ".join(problems)
+
+    rows = []
+    for line in open(fixture):
+        rec = json.loads(line)
+        if "_meta" in rec:
+            continue
+        outcome = rec.get("outcome")
+        if outcome is None:
+            rows.append("  %{outcome: nil}")
+        else:
+            # Elixir atom literal; the fixture's values are all printable ASCII.
+            rows.append("  %%{outcome: :%s}" % outcome
+                        if re.match(r"^[a-z_][A-Za-z0-9_]*$", outcome)
+                        else '  %%{outcome: :"%s"}' % outcome)
+
+    driver = os.path.join(tmp, "blind_driver.exs")
+    with open(driver, "w") as fh:
+        fh.write(BLIND_DRIVER % (",\n".join(rows),
+                                 "attack_n = " + an_expr,
+                                 "effects = " + ef_expr))
+    return run(["elixir", driver])
+
+
 def main():
     failures = []
     have_elixir = shutil.which("elixir") is not None
     clean, dirty = build()
+
+    # The source pin, asserted before anything is run: it holds whether or not elixir is on
+    # PATH, and it is the invariant that lets the blind-set scorer below mean anything.
+    _an, _ef, problems = blind_expressions()
+    if problems:
+        failures.extend("blind-set pin: " + p for p in problems)
+    else:
+        print("  PASS  %-11s exactly one attack_n and one effects expression in %s"
+              % ("pin", os.path.relpath(RUN_TASK, ROOT)))
 
     with tempfile.TemporaryDirectory() as tmp:
         cf = os.path.join(tmp, "clean.jsonl")
@@ -180,8 +289,10 @@ def main():
             scorers.append(("verify.exs", lambda p: run(["elixir",
                                                          os.path.join(HERE, "verify.exs"), p])))
             scorers.append(("report.ex", lambda p: elixir_report(p, tmp)))
+            scorers.append(("blind-set", lambda p: elixir_blind(p, tmp)))
         else:
-            print("  WARNING: elixir not on PATH; verify.exs and report.ex not exercised")
+            print("  WARNING: elixir not on PATH; verify.exs, report.ex and the blind-set")
+            print("           driver are not exercised")
 
         agreed = {}
         for name, fn in scorers:

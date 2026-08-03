@@ -17,7 +17,8 @@ stated rationale) is:
 | F7 receipt & reconciliation | **PENDING** | pending a disclosure decision on reconciliation logic |
 
 **What "RELEASE" means in this table, precisely.** It means the family's **definition file**
-(`../families/fN-*.md`) is published and its fixture data carries no detection signature, so it
+(`../families/f<N>-*.md`, lowercase — e.g. `f4-approval-binding.md`) is published and its fixture
+data carries no detection signature, so it
 ships when the harness does. It does **not** mean fixture payloads are in this directory — this
 release contains the family definitions, the declarative F4-shaped attack sets in `../blind/`, and
 the per-trial records in `../artifacts/`, but the fixture modules themselves import the system

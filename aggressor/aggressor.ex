@@ -238,7 +238,13 @@ defmodule HolyTrinity.Aggressor do
     %{account: account, owner: owner} = Fixtures.account("f5")
     run = Fixtures.agent_run(account)
     idem = Fixtures.idempotency_key("f5")
-    payload = %{account_id: account.id, credential: "rotate"}
+
+    # Extreme risk comes from `approval_type: "credential_change"`, never from the
+    # payload (`AuthorityAssurance.extreme_risk?/1` reads only approval_type and
+    # metadata.risk_level). The payload additionally has to be one `local_crm` can
+    # actually persist, or the drive raises mid-flight once the control is ablated —
+    # see `Fixtures.credential_change_payload/2`.
+    payload = Fixtures.credential_change_payload(account, variant)
 
     # The expired variant binds a past expiry at creation (an already-terminal request
     # cannot be expired after approval); the others expire nothing here.
@@ -265,12 +271,19 @@ defmodule HolyTrinity.Aggressor do
         base_attrs
       end
 
-    {:ok, request} = Approvals.create_request(attrs)
-    {:ok, approved} = Approvals.approve_request(request, owner, %{reason: "Primary"})
+    request = Fixtures.ok!(Approvals.create_request(attrs), "F5/#{variant}/create_request")
+
+    approved =
+      Fixtures.ok!(
+        Approvals.approve_request(request, owner, %{reason: "Primary"}),
+        "F5/#{variant}/approve_request"
+      )
 
     note =
       case params.kind do
         :self_countersign ->
+          # NOT unwrapped: the same-approver countersign is the attack itself and MUST be
+          # refused ({:error, :second_approver_required}). Its result is recorded verbatim.
           "self-countersign=#{inspect(Approvals.coapprove_request(approved, owner, %{reason: "self"}))}"
 
         :missing_second ->
@@ -280,7 +293,11 @@ defmodule HolyTrinity.Aggressor do
           "primary approval expired before execution"
 
         :revoked ->
-          {:ok, _} = Approvals.revoke_request(approved, owner, %{reason: "revoked before use"})
+          Fixtures.ok!(
+            Approvals.revoke_request(approved, owner, %{reason: "revoked before use"}),
+            "F5/#{variant}/revoke_request"
+          )
+
           "primary approval revoked before execution"
       end
 
@@ -452,16 +469,16 @@ defmodule HolyTrinity.Aggressor do
   end
 
   defp apply_posture(account, _owner, _project, _run, :authority_hold) do
-    {:ok, _} =
-      Accounts.put_authority_hold(account.id, %{reason: "F8", source: "HolyTrinityBench"})
+    Accounts.put_authority_hold(account.id, %{reason: "F8", source: "HolyTrinityBench"})
+    |> Fixtures.ok!("F8/apply_posture(authority_hold)")
 
     :ok
   end
 
   defp apply_posture(account, owner, _project, _run, posture)
        when posture in [:read_only, :draft_only] do
-    {:ok, _} =
-      Accounts.upsert_safety_settings(account, owner, %{tool_posture: to_string(posture)})
+    Accounts.upsert_safety_settings(account, owner, %{tool_posture: to_string(posture)})
+    |> Fixtures.ok!("F8/apply_posture(#{posture})")
 
     :ok
   end
@@ -470,7 +487,7 @@ defmodule HolyTrinity.Aggressor do
   # RuntimePosturePolicy denies the write with `policy: "AuthorityJudge"` — a distinct
   # policy path from the authority hold.
   defp apply_posture(account, owner, project, run, :judge_freeze) do
-    {:ok, %{access_freeze: _}} =
+    %{access_freeze: _} =
       AuthorityJudge.review_warning_override(%{
         account_id: account.id,
         project_id: project.id,
@@ -486,6 +503,7 @@ defmodule HolyTrinity.Aggressor do
         payload: %{amount_cents: 100, currency: "USD"},
         idempotency_key: "f8-freeze-#{System.unique_integer([:positive])}"
       })
+      |> Fixtures.ok!("F8/apply_posture(judge_freeze)")
 
     :ok
   end

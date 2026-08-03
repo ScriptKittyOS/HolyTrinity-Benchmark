@@ -6,13 +6,15 @@ abstract: >-
   It measures the unauthorized-effect rate (not model misbehavior) with an independent oracle,
   a three-way outcome model, per-mechanism ablation, statistical confidence intervals, and a
   calibration metric. See PAPER.md and REPORT.md for the method and results.
+  The methodology is frozen as spec version `holytrinity.v1` (spec/SPEC.md), which is distinct
+  from the `version` field of this record: that is the release version of the artifact.
 type: software
 authors:
   - family-names: Croft
     given-names: Ayla
     orcid: "https://orcid.org/0009-0008-9457-2160"
     affiliation: "ScriptKittyOS"
-date-released: "2026-08-02"
+date-released: "2026-08-03"
 repository-code: "https://github.com/ScriptKittyOS/HolyTrinity-Benchmark"
 # The campaign was run against the system under test at private-monorepo commit
 # 79bfd54d0e1efd845ebd9e68985cb81fa01c0212, which is stamped into every trial record in
@@ -25,9 +27,13 @@ keywords:
   - unauthorized-effect
   - independent-oracle
   - ablation-study
+  - holytrinity.v1
 license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/legalcode"
-version: "holytrinity.v1"
+# The release version of this artifact. Zenodo renders this field as the deposit version, so it
+# must not carry the frozen spec version `holytrinity.v1` — that lives in the abstract and
+# keywords above, and in spec/SPEC.md.
+version: "1.1"
 references:
   - type: article
     title: "The Model Proposes, the System Authorizes: An Authority Control Plane for AI Agents on the BEAM"
@@ -35,13 +41,17 @@ references:
       - family-names: Croft
         given-names: Ayla
         orcid: "https://orcid.org/0009-0008-9457-2160"
+        affiliation: "ScriptKittyOS"
     year: 2026
-    doi: "10.5281/zenodo.21764616"
+    doi: "10.5281/zenodo.21754762"
     url: "https://doi.org/10.5281/zenodo.21754762"
     notes: >-
       Companion architecture paper; pre-registers this benchmark's primary metric, secondary
-      metrics, attack classes, and falsification criterion. `doi` is the v1.1 version DOI; `url` is the
-      concept DOI, which resolves to the current version. The earliest deposit is timestamped
+      metrics, attack classes, and falsification criterion. `doi` is the **concept** DOI, which
+      resolves to whatever the current version is — cite it unless you mean one specific version.
+      The v1.1 version DOI, which pins the exact deposit this repository's
+      `papers/the-model-proposes-the-system-authorizes.tex` matches, is 10.5281/zenodo.21764616;
+      the superseded v1.0 deposit is 10.5281/zenodo.21754763. The earliest deposit is timestamped
       2026-08-02T05:34:27Z, after this campaign ran, so it does not corroborate the manuscript's
       stated 29 July date.
   - type: personal-communication
@@ -59,9 +69,12 @@ preferred-citation:
       orcid: "https://orcid.org/0009-0008-9457-2160"
       affiliation: "ScriptKittyOS"
   year: 2026
-  doi: "10.5281/zenodo.21764581"
+  doi: "10.5281/zenodo.21755869"
   url: "https://doi.org/10.5281/zenodo.21755869"
   notes: >-
-    Deposited on Zenodo under CC-BY-4.0. `doi` is the v1.1 version DOI; `url` is the concept DOI,
-    which resolves to the current version. Also submitted to arXiv, primary category cs.AI,
-    cross-listed cs.CR; add the arXiv identifier once announced.
+    Deposited on Zenodo under CC-BY-4.0. `doi` is the **concept** DOI, which resolves to whatever
+    the current version is — cite it unless you mean one specific version. The v1.1 version DOI,
+    which pins the exact deposit this repository's
+    `papers/authority-bound-agentic-execution.tex` matches, is 10.5281/zenodo.21764581; the
+    superseded v1.0 deposit is 10.5281/zenodo.21755870. Also submitted to arXiv with primary
+    category cs.AI, cross-listed cs.CR, cs.DC and cs.SE; add the arXiv identifier once announced.

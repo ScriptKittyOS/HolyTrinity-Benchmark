@@ -1,8 +1,8 @@
 # Committed run artifacts
 
-The frozen per-trial JSONL behind every number in `../REPORT.md` and the paper's §6.3, §6.4, and
-§6.6. They ship so a reader can check the claims — especially the kept-and-fixed failure — against
-raw per-trial records rather than prose.
+The frozen per-trial JSONL behind every number in `../REPORT.md` and the paper. They ship so a
+reader can check the claims — especially the kept-and-fixed failure — against raw per-trial records
+rather than prose.
 
 Each file's **first line is a `_meta` provenance record**, not a trial. It states exactly what the
 file is, and `../scoring/report.ex` skips it.
@@ -14,6 +14,22 @@ file is, and `../scoring/report.ex` skips it.
 | `holytrinity-postfix-campaign.jsonl` | The current hardened campaign: 73 trials, 0 unauthorized effects. The canonical result. |
 | `holytrinity-v1-prefix-campaign.jsonl` | A **labelled reconstruction** of the pre-fix behaviour, containing the one unauthorized effect the benchmark ever recorded. |
 | `family-table.json` | The §6.3 family table as data, with the attack/control denominator stated. |
+| `ablation/` | Six per-trial JSONL files — one per single-mechanism ablation — from which the §6.5 ablation table recomputes exactly. See `ablation/README.md`. |
+| `ablation-study.jsonl` | The same six ablations with their baseline arms, in one file (126 trials). Split the baseline arm on `family`; every baseline record shares one `run_id`. |
+| `baseline.jsonl` | The no-control ceiling, both arms (126 trials). Split on `run_id` (`…-gov` / `…-nogov`): governed 63/8/0, no-control 63/63/51. |
+| `compound.jsonl` | The compound ablation, three arms of 29 (87 trials): `0 → 14 → 27`. |
+| `tcb-full-catalog.jsonl` | The §9.1 channel probes: four ablations (`security.content_firewall`, `hermes.runtime_sentinel`, `hermes.skill_auditor`, `policies.spend`), each driving the **full 73-trial catalog** — 292 records, 41 provider-call trials live under every ablation. Unauthorized 10 / 5 / 5 / 0, all in the ablated mechanism's own gate channel, `provider_call` unauthorized 0 throughout. The §9.1 kernel row comes from `ablation/tcb-F4.jsonl`. |
+| `ablation/tcb-per-family-probes.jsonl` | The **superseded** per-family probe run (55 trials, each probe confined to its own family). Kept because an earlier revision of the papers cited it for a claim it could not support; its `_meta.caveat` records why. Not the basis for any current figure. |
+| `overhead.jsonl` | Governed-latency, one record per iteration per arm, 200 per arm. `_meta.note` states the exact rule that reproduces the published percentiles. |
+| `false-denials.jsonl` | The 75 synthetic legitimate actions, each with its configuration and `denying_policy` (`null` throughout). |
+| `measurement-integrity.jsonl` | The two F10 controls. Two trials is a demonstration, not a rate. |
+| `blind.jsonl` | The blind red team: 36 rows, 32 attack, 0 unauthorized effects. A **re-run of the shipped `blind/blind-set-01.json`**, not the record of the run that produced the published `0/32` — that run used an earlier defective blob and retained no JSONL. See `../blind/README.md`. |
+
+Every one of these carries a `_meta` first line stating how to recompute the figure it backs, and
+several carry a `caveat` field bounding what the run can support. Read the caveat before citing the
+row: `tcb-full-catalog.jsonl`'s bounds §9.1 to single removals of the mechanisms that have a runtime
+toggle, and `false-denials.jsonl`'s and `overhead.jsonl`'s each limit a claim a reader would
+otherwise reasonably draw from the numbers.
 
 ## `holytrinity-v1-prefix-campaign.jsonl` — a RECONSTRUCTION, not the original run
 
@@ -62,12 +78,23 @@ per-family and aggregate unauthorized-effect rates and their confidence interval
 breakdown, the Oracle × `proof_state` confusion matrix, the calibration decomposition, and the
 effect-channel split.
 
-**They cannot verify** — because these runs' per-trial records are not in this release — the
-ablation and trusted-computing-base tables, the no-control ceiling (47 of 63), the overhead
-percentiles, the false-denial rate, the F10 measurement-integrity controls, or the blind-set
-result. Those figures are reported in `../REPORT.md` from their own runs and are not independently
-auditable from this directory. We state that rather than let "auditable from the artifacts" imply
-more coverage than it has.
+**They can also verify, from the other files in this directory**: the §6.5 single-mechanism
+ablation table (from `ablation/` or `ablation-study.jsonl`), the §9.1 trusted-computing-base
+channel table (from `tcb-full-catalog.jsonl` plus `ablation/tcb-F4.jsonl` for the kernel row), the
+no-control ceiling, the compound ablation, the governed-latency percentiles, the false-denial rate,
+the F10 controls, and the blind-set result. See `ablation/README.md` for the one-command recipe on
+the ablation files, and each file's `_meta` for the rest. Earlier revisions of this file listed most
+of these as unauditable; that is no longer true, and the list is corrected rather than quietly
+dropped.
+
+**Auditable is not the same as unbounded, and the remaining limits are scope rather than
+arithmetic.** Every published figure recomputes from a file here. What no file settles is which runs
+exist: §9.1 removes each element **singly** and never in combination, F6/F7/F9 have no runtime
+toggle and are never ablated, and the membrane and durable authority store have no ablation row at
+all. Two files additionally support narrower claims than their headline numbers suggest, and say so
+in their own `_meta.caveat`: `false-denials.jsonl` (75 rows are 3 configurations × 25 repeats, so
+the cluster-aware denominator is 3) and `overhead.jsonl` (two unpaired series on one machine, so no
+per-call delta and no percentage overhead can be recomputed from them).
 
 **One further limit worth naming.** `authorization_snapshot_ref` carries the two snapshot *capture
 timestamps*, not the snapshots themselves — `spec/SPEC.md` §7 specifies file references, and the

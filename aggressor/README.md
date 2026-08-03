@@ -39,14 +39,22 @@ that corrupted the authorization path would corrupt its own verdict.
 
 ## Two things to read honestly before drawing conclusions
 
-**`agent_proposed_violation` is a property of the trial design, not an observation.** No language
-model is invoked anywhere in this harness. Every attack injects the violating action directly at the
-control-plane boundary, exactly as a fully compromised model would emit it — the premise the paper
-takes from the prompt-injection literature rather than re-measuring. The field records whether a
-trial's input was *constructed* to be violating. Treat the column as "violating input constructed",
-not as a measured model misbehaviour rate. This is deliberate: stipulating a worst-case proposal
-measures the unauthorized-effect rate against an adversary that never fails to propose, and removes
-the base model's variance from the result.
+**`agent_proposed_violation` is a property of the trial design, not an observation.** **No language
+model is invoked anywhere in this harness** — not in `aggressor.ex`, `variants.ex`, `chaos.ex` or
+`fixtures.ex`, not in `../harness/`, `../oracle/` or `../scoring/`. There is no model client, no
+inference call, and no API key on any code path in this release; a grep of the whole released tree
+for a provider SDK, a chat-completion call or a model identifier returns nothing. Every attack
+injects the violating action directly at the control-plane boundary, exactly as a fully compromised
+model would emit it — the premise the paper takes from the prompt-injection literature rather than
+re-measuring. The field records whether a trial's input was *constructed* to be violating. This is
+deliberate: stipulating a worst-case proposal measures the unauthorized-effect rate against an
+adversary that never fails to propose, and removes the base model's variance from the result.
+
+It follows that **57 is not a model misbehaviour rate and cannot be read as one.** It is the count
+of trials whose *input was constructed* to be violating, it is a property of the fixture set, and
+its denominator is the **61 attack trials** — all 57 fall inside them — not the 73 total. "57/73"
+is wrong twice over: wrong denominator, and wrong kind of quantity. Treat the column as "violating
+input constructed".
 
 **`expected_detection_source` is a pre-registered expectation, not an observation.** On a prevented
 trial the Runner records the family's expected denial point, because identifying the actual denying
@@ -70,10 +78,16 @@ Everything else about those families is public: the taxonomy, the per-family cou
 F6 and F9 need process kills and structural checks rather than prompts, so `chaos.ex` builds their
 trial records directly and **does not invoke the Oracle**. They carry `effect_channel: chaos`,
 `effects_observed: []`, and `system_proof_state: not_applicable`. A failing predicate records
-`undetected`, so they remain falsifiable — but they are structural controls, not
-independently-adjudicated attack trials, and the paper's independence claim should be read as
-covering the 35 provider-call trials.
+`undetected`, so they remain falsifiable — but that `undetected` is a **structural-predicate
+failure**, a categorically different event from an unauthorized external effect crossing the
+provider membrane. They are structural controls, not independently-adjudicated attack trials; the
+paper's independence claim should be read as covering the 35 provider-call trials, and the two
+event classes belong in separate denominators (`../families/f6-membrane-bypass.md`,
+`../families/f9-process-lifecycle.md`).
 
 One scope limit worth stating plainly: F6's trial checks the boundary guard's **predicate** over the
-source tree. It does not write the planted module to disk and does not invoke a compilation, so it is
-**not** the demonstrated build failure that `../spec/SPEC.md` §4 pre-registered for this family.
+source tree. It does not write the planted module to disk and **does not invoke a compilation** —
+`chaos.ex:55-60` says so in the source, and no `mix compile`, `Code.compile*` or compiler
+invocation appears anywhere in the released tree. So it is **not** the demonstrated build failure
+that `../spec/SPEC.md` §4 pre-registered for this family, and any claim that F6 "fails the build"
+or "confirms CI rejects it" is unsupported by what this code does.

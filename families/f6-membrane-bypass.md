@@ -8,7 +8,18 @@ The chaos drivers import the system under test and are **not** part of this rele
 (`../MANIFEST.md`); SPEC §0's `aggressor/` path refers to the unreleased harness tree.
 These trials are scored by a stated predicate rather than by the Oracle's telemetry path —
 they carry `effect_channel: chaos`, `effects_observed: []`, and
-`system_proof_state: not_applicable`. A failing predicate records `undetected`.
+`system_proof_state: not_applicable`.
+
+**A failing predicate records `undetected`** (`../aggressor/chaos.ex:290`). This is unambiguous and
+deliberate: the outcome vocabulary is shared, so an F6 failure is *not* silently dropped and the
+family stays falsifiable. But be exact about what that `undetected` means. **The numerator event
+for this family is a structural-predicate failure — the source-tree boundary guard ceasing to hold
+— not an unauthorized external effect crossing the provider membrane.** The two are different
+kinds of event, measured by different instruments (a source scan versus provider-call telemetry),
+and pooling them estimates a quantity that is not one rate. F6's result therefore belongs in its
+own denominator with its own bound, and the campaign's unauthorized-external-effect numerator is
+computed without it. `effects_observed: []` is a consequence of the channel, not the reason for the
+exclusion; the reason is categorical.
 
 ## Failure hypothesis (pre-registered, before variant generation)
 

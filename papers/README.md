@@ -3,14 +3,26 @@
 Two papers describe this work. They are siblings and should be read together: the first states
 the architecture and specifies the evaluation, the second runs it.
 
-| File | Paper | Dated |
-|---|---|---|
-| `the-model-proposes-the-system-authorizes.tex` | **The Model Proposes, the System Authorizes: An Authority Control Plane for AI Agents on the BEAM** | 29 July 2026 |
-| `authority-bound-agentic-execution.tex` | **Authority-Bound Agentic Execution: Measuring Unauthorized Effect Under Adversarial Load** | 2 August 2026 |
+| Source (archival) | Readable | Paper | Dated |
+|---|---|---|---|
+| `the-model-proposes-the-system-authorizes.tex` | [`../PAPER-ARCHITECTURE.md`](../PAPER-ARCHITECTURE.md) | **The Model Proposes, the System Authorizes: An Authority Control Plane for AI Agents on the BEAM** | 29 July 2026 |
+| `authority-bound-agentic-execution.tex` | [`../PAPER.md`](../PAPER.md) | **Authority-Bound Agentic Execution: Measuring Unauthorized Effect Under Adversarial Load** | 2 August 2026 |
 
-Both are LaTeX sources and both compile with `pdflatex` alone: no `.bib`, no figures, no external
-inputs. `../PAPER.md` is a Markdown rendering of the second paper, kept at the repository root
-because the rest of the documentation links to it.
+**Read the Markdown; keep the LaTeX.** The `.tex` files in this directory are the archival record
+— the deposited Zenodo versions hold exactly these files, verified by hash, and they are the arXiv
+submission sources. They are not the copies you are meant to read: GitHub renders LaTeX as plain
+text with the markup left in. The Markdown renderings at the repository root are for reading, and
+the rest of the documentation links to them.
+
+Both `.tex` files compile with `pdflatex` alone: no `.bib`, no figures, no external inputs. No
+compiled PDFs ship, and the machine these were last revised on had no LaTeX toolchain, so the page
+counts are unverified.
+
+The two forms are held together by `../scoring/check_paper_sync.py`, which normalizes each pair and
+fails if a number appears in one and not the other. That gate exists because these renderings have
+drifted twice, and on both occasions the Markdown retained a figure the LaTeX had already retracted
+— the `57/73` denominator and the "observed 47" effect-log claim. A rendering nobody checks is a
+second place for a retracted number to survive.
 
 ## Why the pair matters, and how to check it
 
@@ -64,7 +76,7 @@ Both sources here incorporate an adversarial audit and a CoSAI whitepaper assess
 them. The changes a reader of an earlier draft would notice:
 
 The architecture paper corrects its test count to a figure that verifies (1,286 test blocks across
-287 test files), replaces "compile-time invariants" with "CI-enforced structural invariants"
+287 test files), and replaces "compile-time invariants" with "CI-enforced structural invariants"
 throughout, because the guard is an ExUnit test rather than a compiler hook and `mix compile`
 succeeds with a violating caller present. It names the SRF **IaaS** operating model rather than an
 invented "customer-built" label, lists seven proof states rather than six, describes agent reset as
@@ -74,8 +86,16 @@ evaluation-status section with the evaluation that has since run.
 
 The evaluation paper corrects three misattributions to canonical sources: defense in depth is not
 a Saltzer and Schroeder principle, Anderson's reference monitor is tamper-proof rather than
-tamper-evident, and Kerckhoffs was cited against the wrong reference. It corrects the denial split
-(31 at preflight, 4 by posture policy), reports the false-denial rate with an interval and its
-clustering caveat, states the denominator sensitivity, and corrects its measurement-integrity claim:
-the F1, F2, and F3 ablation conversions carry empty effect logs, so the evidence that the effect log
-fires is F4's 16 records and F8's 4, not those.
+tamper-evident, and Kerckhoffs was cited against the wrong reference. It corrects the denial split,
+reports the false-denial rate with an interval and its clustering caveat, states the denominator
+sensitivity, and corrects its measurement-integrity claim: the F1, F2, and F3 ablation conversions
+carry empty effect logs, so the evidence that the effect log fires is F4's 16 records and F8's 4,
+not those.
+
+The corrected **denial split** is worth stating outright, because an earlier draft got it wrong in
+both terms. Of the 41 provider-call trials, 35 were denied before the adapter ran, and they break
+down as **18 preflight / `AuthorityAssurance`, 13 preflight / `SpendPolicy`, 2 policy /
+`RuntimePosturePolicy`, 1 policy / `AuthorityAssurance`, 1 policy / `AuthorityJudge`** — not "31 at
+preflight, 4 by posture policy". The old preflight figure folded 13 `SpendPolicy` denials into
+`AuthorityAssurance`, which hid a load-bearing barrier that no family definition names.
+`../REPORT.md` carries the full breakdown.

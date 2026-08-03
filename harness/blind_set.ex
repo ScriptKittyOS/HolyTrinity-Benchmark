@@ -1,6 +1,6 @@
 defmodule HolyTrinity.BlindSet do
   @moduledoc """
-  The blind held-out red team (paper §6.7/§6.9) — the direct answer to the internal-validity
+  The blind held-out red team (paper §6.7) — the direct answer to the internal-validity
   objection "you attacked your own system."
 
   The authored attack set (`HolyTrinity.Aggressor`) is written *against the code*, so its

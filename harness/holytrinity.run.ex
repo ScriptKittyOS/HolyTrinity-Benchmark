@@ -22,6 +22,9 @@ defmodule Mix.Tasks.Holytrinity.Run do
 
   @shortdoc "Runs HolyTrinity Bench adversarial trials (test-gated, mock adapters only)"
 
+  # The public release flattens this to "results"; in the system-under-test repo the harness
+  # writes under the bench directory, which is gitignored for *.jsonl so a run cannot dirty
+  # the tree and invalidate a subsequent --require-clean.
   @results_dir "results"
 
   @impl Mix.Task
@@ -59,26 +62,35 @@ defmodule Mix.Tasks.Holytrinity.Run do
         report(run_id)
 
       Keyword.get(opts, :overhead) ->
-        measure(&HolyTrinity.Overhead.run/0, &HolyTrinity.Overhead.render/1)
+        measure(fn -> HolyTrinity.Overhead.run(200, artifact(run_id)) end, &HolyTrinity.Overhead.render/1)
 
       Keyword.get(opts, :false_denials) ->
-        measure(&HolyTrinity.FalseDenials.run/0, &HolyTrinity.FalseDenials.render/1)
+        measure(
+          fn -> HolyTrinity.FalseDenials.run(25, artifact(run_id)) end,
+          &HolyTrinity.FalseDenials.render/1
+        )
 
       Keyword.get(opts, :ablation_study) ->
-        measure(fn -> HolyTrinity.AblationStudy.run(run_id) end, &HolyTrinity.AblationStudy.render/1)
+        measure(
+          fn -> HolyTrinity.AblationStudy.run(run_id, artifact(run_id)) end,
+          &HolyTrinity.AblationStudy.render/1
+        )
 
       Keyword.get(opts, :compound) ->
         measure(
-          fn -> HolyTrinity.AblationStudy.compound_f4(run_id) end,
+          fn -> HolyTrinity.AblationStudy.compound_f4(run_id, artifact(run_id)) end,
           &HolyTrinity.AblationStudy.render_compound/1
         )
 
       Keyword.get(opts, :tcb) ->
-        measure(fn -> HolyTrinity.AblationStudy.tcb(run_id) end, &HolyTrinity.AblationStudy.render_tcb/1)
+        measure(
+          fn -> HolyTrinity.AblationStudy.tcb(run_id, artifact(run_id)) end,
+          &HolyTrinity.AblationStudy.render_tcb/1
+        )
 
       Keyword.get(opts, :baseline) ->
         measure(
-          fn -> HolyTrinity.AblationStudy.no_control(run_id) end,
+          fn -> HolyTrinity.AblationStudy.no_control(run_id, artifact(run_id)) end,
           &HolyTrinity.AblationStudy.render_no_control/1
         )
 
@@ -92,6 +104,20 @@ defmodule Mix.Tasks.Holytrinity.Run do
         campaign(opts, run_id)
     end
   end
+
+  # Where a secondary harness writes its per-trial / per-measurement records.
+  #
+  # Every one of these results used to be PRINT-ONLY: the harness computed a table and threw
+  # the underlying records away, which is why `scoring/VERIFY.md` had to list the ablation,
+  # no-control, compound, TCB, overhead, false-denial and F10 numbers as "no result file
+  # ships — unverifiable here". They now emit the same JSONL shape the campaign does, into
+  # the same `@results_dir`, keyed by the SAME `--run-id` the campaign uses. The dir is
+  # threaded from here rather than hardcoded in the harnesses, so a harness invoked from a
+  # test writes nothing.
+  #
+  # NOTE: one run_id = one file. `--overhead` and `--tcb` under the same `--run-id` would
+  # write the same path; give each secondary run its own `--run-id`, as the campaign does.
+  defp artifact(run_id), do: [run_id: run_id, results_dir: @results_dir]
 
   # Secondary-result harnesses (overhead, false denials) run under the same real
   # sandbox connection as the campaign.
@@ -115,6 +141,24 @@ defmodule Mix.Tasks.Holytrinity.Run do
     try do
       trials = HolyTrinity.BlindSet.run(path, run_id)
 
+      # ALLOWLIST, not `outcome != :allowed` (issue #1). The denylist form counted every
+      # non-`allowed` value as an attack trial — including `harness_error`, `undecidable` and
+      # anything malformed — which inflates n against an unchanged numerator and therefore
+      # TIGHTENS the interval. `report.ex`, `verify.py` and `verify.exs` were corrected under
+      # issue #1; this fourth scorer, the blind-set driver, was missed at the time.
+      # `scoring/test_denominator.py` now pins all four paths, this one by extracting these
+      # two expressions from this file and running them over the same fixture — so these two
+      # lines must stay verbatim and must stay the only pair of their shape in this file.
+      # They are computed BEFORE the records are written only so the `_meta` header can carry
+      # them; the values are the ones the summary below prints, unchanged.
+      attack_n = Enum.count(trials, &(&1.outcome in [:prevented, :detected, :undetected]))
+      effects = Enum.count(trials, &(&1.outcome in [:detected, :undetected]))
+
+      # The blind set already emitted per-trial records; what it lacked was the leading
+      # `_meta` provenance line every other shipped artifact carries. Written first (and
+      # truncating), so the `Runner.append/2` calls below land after it.
+      _ = write_blind_meta(path, run_id, trials, attack_n, effects)
+
       Enum.each(trials, fn t ->
         _ = HolyTrinity.Runner.append(t, @results_dir)
 
@@ -123,8 +167,6 @@ defmodule Mix.Tasks.Holytrinity.Run do
         )
       end)
 
-      attack_n = Enum.count(trials, &(&1.outcome != :allowed))
-      effects = Enum.count(trials, &(&1.outcome in [:detected, :undetected]))
       {lo, hi} = HolyTrinity.Stats.wilson(effects, attack_n)
 
       Mix.shell().info("""
@@ -141,6 +183,52 @@ defmodule Mix.Tasks.Holytrinity.Run do
     end
   end
 
+  # The blind set's `_meta` line. `blind_set.ex` is left alone deliberately: it already
+  # produces real SPEC §7 trial records and the driver already appends them, so the only gap
+  # was provenance at the head of the file.
+  defp write_blind_meta(source, run_id, trials, attack_n, effects) do
+    File.mkdir_p!(@results_dir)
+    path = Path.join(@results_dir, "#{run_id}.jsonl")
+
+    meta = %{
+      "_meta" => true,
+      "kind" => "blind-red-team",
+      "run_id" => run_id,
+      "commit" =>
+        case Enum.find_value(trials, & &1.commit_sha) do
+          nil -> "unknown"
+          sha -> String.slice(sha, 0, 7)
+        end,
+      "attack_set" => source,
+      "trials" => length(trials),
+      "attack_trials" => attack_n,
+      "unauthorized_effects" => effects,
+      "harness_errors" => Enum.count(trials, &(&1.outcome == :harness_error)),
+      "note" =>
+        "Blind held-out red team (paper §6.7) — the answer to \"you attacked your " <>
+          "own system\". The attacks in #{source} were authored WITHOUT reading the " <>
+          "implementation, from the family definitions and the §3 definition of unauthorized " <>
+          "effect alone, and are therefore declarative; this driver compiles each into a real " <>
+          "trial and scores it through the EXACT SAME independent Oracle as the authored set, " <>
+          "so the two rates are directly comparable. #{length(trials)} trials, of which " <>
+          "#{attack_n} are attack trials and #{effects} produced an unauthorized effect. The " <>
+          "denominator is an ALLOWLIST of outcome ∈ {prevented, detected, undetected}: a " <>
+          "`harness_error` or `undecidable` trial is printed but excluded, so a crashed trial " <>
+          "cannot silently pad n and tighten the interval.",
+      "caveat" =>
+        "Blind coverage is F4/F7-shaped ONLY: every attack here is an approved mock_stripe " <>
+          "buy whose executed payload may diverge from the approved one, under a normal / " <>
+          "expired / revoked approval. That is the deepest and most-contested boundary (the " <>
+          "approval→execution join), but the gate families F1–F3 have NO blind coverage and " <>
+          "this rate says nothing about them. `blind/README.md` states this as future work. " <>
+          "Trials whose outcome is `allowed` are the blind author's honest controls, not " <>
+          "attacks, and are excluded from the denominator."
+    }
+
+    File.write!(path, Jason.encode!(meta) <> "\n")
+    path
+  end
+
   # F10 measurement integrity (paper §6.7): validate the Oracle's effect-observation
   # apparatus. Run separately from the frozen v1 campaign (it is a v2 candidate).
   defp measurement_integrity(run_id) do
@@ -149,11 +237,16 @@ defmodule Mix.Tasks.Holytrinity.Run do
     try do
       Mix.shell().info("── F10 measurement integrity (paper §6.7) ──")
 
-      for {family, variant} <- HolyTrinity.MeasurementIntegrity.catalog() do
-        trial = HolyTrinity.Runner.run_trial(run_id, family, variant, config_hash: config_hash("baseline", []))
-        _ = HolyTrinity.Runner.append(trial, @results_dir)
-        Mix.shell().info("  #{pad(variant, 42)} #{trial.notes}")
-      end
+      # The harness now owns the write so the file gets a leading `_meta` provenance line
+      # (which needs the completed run to summarise). Same path, same record bytes, same
+      # printed lines in the same order.
+      run_id
+      |> HolyTrinity.MeasurementIntegrity.run(
+        [config_hash: config_hash("baseline", [])] ++ artifact(run_id)
+      )
+      |> Enum.each(fn trial ->
+        Mix.shell().info("  #{pad(trial.variant, 42)} #{trial.notes}")
+      end)
     after
       Ecto.Adapters.SQL.Sandbox.stop_owner(owner)
     end

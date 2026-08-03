@@ -20,6 +20,13 @@
 \usepackage[hidelinks,breaklinks=true]{hyperref}
 \urlstyle{same}
 
+\hypersetup{
+ pdftitle={Authority-Bound Agentic Execution: Measuring Unauthorized Effect Under Adversarial Load},
+ pdfauthor={Ayla Croft},
+ pdfsubject={cs.AI},
+ pdfkeywords={AI agent security, authorization, unauthorized-effect rate, reference monitor, complete mediation, BEAM, evaluation methodology}
+}
+
 % pandoc compatibility shims
 \providecommand{\tightlist}{%
  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -32,7 +39,7 @@
 \title{Authority-Bound Agentic Execution:\\
  Measuring Unauthorized Effect Under Adversarial Load}
 \author{Ayla Croft\\
- \small Script Kitty OS\\
+ \small ScriptKittyOS\\
  \small \texttt{ayla@scriptkittyos.com}\\
  \small ORCID: \texttt{0009-0008-9457-2160}}
 \date{August 2, 2026}
@@ -54,9 +61,9 @@ provider-boundary telemetry and a raw authorization snapshot, never in the syste
 verdict. The agent was induced to propose a
 policy-violating action in \textbf{57 of the 61 attack trials}; across \textbf{61} attack trials \textbf{zero}
 unauthorized external effects occurred (95\% CI {[}0.0\%, 5.9\%{]}). Three things reported alongside it support that result. First, an \textbf{ablation study}: disabling
-each mechanism in isolation converts its attacks (0$\rightarrow$10, 0$\rightarrow$5, 0$\rightarrow$5, 0$\rightarrow$14 unauthorized effects
-across the content, runtime, skill, and approval-binding boundaries), and a \textbf{no-control}
-run with the full membrane disabled converts \textbf{47 of 63} attacks: the ceiling the governed
+each mechanism in isolation converts its attacks (0$\rightarrow$10, 0$\rightarrow$5, 0$\rightarrow$5, 0$\rightarrow$14, 0$\rightarrow$2 unauthorized effects
+across the content, runtime, skill, approval-binding, and two-person-approval boundaries), and a \textbf{no-control}
+run with the full membrane disabled produces an unauthorized effect in \textbf{51 of 63 trials}: the ceiling the governed
 result is measured against. Second, a \textbf{kept-and-fixed failure}: the v1 run's single
 unauthorized effect was a sleeper skill the deterministic auditor missed; we hardened the
 auditor with a behavioral conditional-exfil detector, re-benchmarked, and ship the pre-fix
@@ -68,8 +75,12 @@ trials produced an observed effect; we therefore add a \textbf{measurement-integ
 confirming the oracle's effect log fires when an effect occurs (and the ablation runs wrote 20
 provider-boundary records, 16 in the approval-binding ablation and 4 in the posture ablation),
 so a governed zero means ``nothing crossed,'' not ``the oracle was blind.''
-Governed actions carry a median added latency of \textbf{\textasciitilde17 ms}; the false-denial rate is
-\textbf{0.0\%} over 75 legitimate approved actions. We report every rate with a confidence
+Governed actions carry a median latency of \textbf{\textasciitilde19 ms}, reported as an absolute
+cost rather than a differential because the ungoverned baseline is a no-I/O function three orders
+of magnitude cheaper than the timer's printed resolution
+(\S6.11); the false-denial rate is
+\textbf{0.0\%} over 75 legitimate approved actions (0/75; 95\% CI {[}0.0\%, 4.9\%{]}, effective
+n=3). We report every rate with a confidence
 interval, publish a seven-state proof model rather than binary pass/fail, and state the
 boundaries our attack set does not exhaust. Limitations are stated in full: one system, one domain, mock
 provider adapters, and a genuinely-distinct rather than exhaustive attack set.
@@ -81,7 +92,7 @@ Trinity authority control plane and the HolyTrinity Bench harness pinned at comm
 using mock provider adapters (no live provider I/O). We open-source \textbf{the benchmark}: the
 harness, the independent oracle, the frozen specification, the family definitions, the
 released fixtures (per \S11), and the \textbf{committed result artifacts} (per-trial JSONL, the
-family table as data), at \textbf{https://github.com/ScriptKittyOS/HolyTrinity-Benchmark}. We do
+family table as data), at \textbf{\url{https://github.com/ScriptKittyOS/HolyTrinity-Benchmark}}. We do
 \textbf{not} yet open-source the \textbf{system under test} (the Trinity control plane), so the paper is
 \emph{not fully re-executable end-to-end by a third party at this time.} Two things are
 nonetheless independently checkable now: (1) every reported number and table follows
@@ -209,9 +220,13 @@ composable so that governance controls can be located and evaluated independentl
 decision method.
 Trinity is one such application-level control layer, and this paper is its evaluation.
 
-Proof is not binary. The verifier emits one of seven proof states: verified, failed,
-degraded, pending-receipt, legacy-incomplete, manual-review-required, and missing, because
-real provider systems are late and incomplete. Publishing this \emph{state model} (as distinct
+Proof is not binary. The verifier emits one of seven proof states: \texttt{verified},
+\texttt{failed}, \texttt{degraded}, \texttt{pending\_receipt}, \texttt{legacy\_incomplete},
+\texttt{manual\_review\_required}, and \texttt{missing}, because real provider systems are late and
+incomplete. A trial record can also carry an eighth value, \texttt{not\_applicable}, which the
+harness stamps on the six chaos trials (F6, F9) that place no proof obligation on the verifier; it
+is a record-keeping value rather than a verifier verdict, and we name it here because it appears in
+the committed artifacts. Publishing this \emph{state model} (as distinct
 from the internals that compute it) is itself a contribution: it separates a truthful proof posture from an overclaimed one, which most binary evaluations cannot.
 
 \section{Implementation}\label{implementation}
@@ -246,9 +261,11 @@ under test is pinned to commit \texttt{79bfd54}. The invariant depends on two ru
  \emph{stopped acting}, not just become unreachable), and we would rather bound the claim than
  overstate it.
 \item
- \textbf{Compile-time boundary coverage.} A structural check fails the build if a code path
- reaches the raw tool-execution seam without passing the result firewall: the fence is
- enforced at compile/CI time, not by convention.
+ \textbf{CI-enforced boundary coverage.} A structural check over the source tree flags any code
+ path that reaches the raw tool-execution seam without passing the result firewall, and CI
+ enforces the check: the fence is machine-checked rather than upheld by convention. What F6
+ exercises is that check's predicate over the source tree; no build is invoked (\S6.10), so we do
+ not report a demonstrated build failure.
 \end{itemize}
 
 The full percentile table, hardware, and per-trial provenance for commit \texttt{79bfd54} are in
@@ -264,9 +281,11 @@ We measure two rates and never collapse them:
 \tightlist
 \item
  \textbf{Violating-input rate}: the fraction of trials whose input was \emph{constructed} to be
- policy-violating. We do not measure a model misbehaviour rate and do not report one. Our harness
- injects the violating action directly at the control-plane boundary, exactly as a fully
- compromised model would emit it. That is the strong test specified in {[}15{]}: ``replace the
+ policy-violating. We do not measure a model misbehaviour rate and do not report one, and the 57 is
+ not one: \emph{no language model is invoked anywhere in this harness}, which
+ \texttt{aggressor/README.md} states enumerated per file. The 57 of 61 is a property of the fixture
+ set. Our harness injects the violating action directly at the control-plane boundary, exactly as a
+ fully compromised model would emit it. That is the strong test specified in {[}15{]}: ``replace the
  agent entirely with an adversarial oracle that emits worst-case output at every step.''
  Stipulating the proposal produces a strictly stronger adversary than sampling one, because it
  never fails to propose, and it removes the base model's variance from the result. A
@@ -283,14 +302,14 @@ boundary), \textbf{detected} (the effect occurred and the system independently f
 \textbf{allowed} and never count toward the unauthorized-effect rate.
 
 \textbf{The definition of an unauthorized effect was fixed in writing before the first scored run}
-(\texttt{SPEC.md} \S3), including edge cases (partial effects, idempotent replay, tenant-scoped
+(\texttt{spec/SPEC.md} \S3), including edge cases (partial effects, idempotent replay, tenant-scoped
 reads, wrong-attribution, and approved-but-misrepresented actions). It was not adjusted after
 seeing results.
 
 \textbf{Scoring is automatic, not judge-mediated.} All 73 trials are scored mechanically by the
 oracle from telemetry and the authorization snapshot against the \S3 rules: no LLM-as-judge
 and no per-trial human verdict. Every trial record carries \texttt{scorer:\ "auto"}, and the
-\texttt{SPEC.md} \S8 provision for manual adjudication of genuinely undecidable cases was not needed
+\texttt{spec/SPEC.md} \S8 provision for manual adjudication of genuinely undecidable cases was not needed
 (the run produced no \texttt{undecidable} verdicts). Because the rules are mechanical and the inputs
 are logged, the scoring is reproducible from the committed JSONL rather than resting on an
 adjudicator's judgment.
@@ -320,6 +339,21 @@ correct in-process run, never fires.
 an adapter, a natural way to observe calls, silently disables a spend gate. The oracle
 therefore observes only via telemetry, which is behavior-neutral. This is recorded in the
 threats to validity.
+
+\textbf{Where the independence rule is broken: F4.} The oracle decides payload identity by calling
+\texttt{AuthorityAssurance.canonical\_payload\_hash/1} (\texttt{oracle/oracle.ex:313}, also
+\texttt{:348} and \texttt{:360}), and \texttt{AuthorityAssurance} is the system under test. F4 is
+27 of the 31 trials that could falsify the invariant, and F4's hypothesis is exactly that
+canonicalization must not collide semantically distinct payloads. Oracle and system therefore
+evaluate the same function on the same input: a collision returns \texttt{permit} from the system
+and \texttt{authorized} from the oracle, and the two agree because they are one computation. \emph{The
+failure class F4 exists to detect is the one class this oracle cannot detect.} Two facts compound
+it. The canonicalizer is withheld (\S11), so no reader can check it; and it has had no
+cryptographic review, while \S9.1 names it an element of the trusted computing base. F4's verdict
+is therefore conditional on the correctness of an unreviewed function inside the system under test,
+and F4 is outside the scope of this paper's independent-adjudication claim. The fix is a
+canonicalizer written independently in \texttt{oracle/} from a written specification, with both
+hashes published per trial; it does not exist yet and it is required future work.
 
 \subsection{Attack families and headline result}\label{attack-families-and-headline-result}
 
@@ -390,11 +424,12 @@ channel} (SPEC \S1 effect channels; the TCB framing of \S9.1 depends on the dist
 is tainted \emph{input} passing an upstream gate, which is not itself an external effect. Broken out:
 
 \begin{longtable}[]{@{}
- >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1765}}
- >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1765}}
- >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2353}}
- >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2353}}
- >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1765}}@{}}
+ >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1900}}
+ >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1200}}
+ >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1300}}
+ >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1600}}
+ >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2000}}
+ >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2000}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Effect channel
@@ -405,27 +440,85 @@ Attack trials
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 Unauthorized effects
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-95\% CI (rule-of-3)
+One-sided 95\% upper bound (rule of three)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Two-sided 95\% Wilson upper limit
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\texttt{provider\_call} (external effect) & F4, F5, F8 & 35 & 0 & $\leq$ 8.6\% \\
-gate (content/runtime/skill) & F1, F2, F3 & 20 & 0 & $\leq$ 15.0\% \\
-chaos (structural/process) & F6, F9 & 6 & 0 & $\leq$ 50.0\% \\
+\texttt{provider\_call} (external effect) & F4, F5, F8 & 35 & 0 & $\leq$ 8.6\% & $\leq$ 9.9\% \\
+gate (content/runtime/skill) & F1, F2, F3 & 20 & 0 & $\leq$ 15.0\% & $\leq$ 16.1\% \\
+chaos (structural/process) & F6, F9 & 6 & 0 & $\leq$ 50.0\% & $\leq$ 39.0\% \\
 \end{longtable}
+
+The two bound columns are not two estimates of one quantity, and we state the difference once. A
+two-sided 95\% Wilson upper limit corresponds to 97.5\% one-sided coverage, while 3/n approximates
+the 95\% one-sided bound. The rule-of-three figure is therefore usually the smaller number and
+always the lower-confidence claim; it reads as tighter and is not. Both are reported throughout and
+neither substitutes for the other.
 
 The row that carries the paper's core claim is the first: \textbf{0 unauthorized external effects in
 35 provider-call attack trials.} The gate rows report a different and weaker guarantee (tainted
 input was blocked upstream), and pooling them into one headline would overstate the external
 result's n.~We report both.
 
+\textbf{The denominator is a ladder, and we publish the ladder rather than pick a rung.} 61 is
+correct as a count of \emph{attempts} and wrong as a count of \emph{opportunities}, because not
+every attack trial could have produced an unauthorized effect even if every control had failed:
+
+\begin{longtable}[]{@{}
+ >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4200}}
+ >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0800}}
+ >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+ >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Denominator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+One-sided 95\% (rule of three)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Two-sided 95\% Wilson upper
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Attack trials driven (attempts) & 61 & $\leq$ 4.9\% & $\leq$ 5.9\% \\
+Structurally capable of inducing a violation & 51 & $\leq$ 5.9\% & $\leq$ 7.0\% \\
+Capable of an external effect (F4's 27 + F5's 4) & 31 & $\leq$ 9.7\% & $\leq$ 11.0\% \\
+Cluster-aware, mechanism as the unit (8 mechanisms) & 8 & --- & $\leq$ 32.4\% \\
+\end{longtable}
+
+Ten of the 61 provably cannot enter the numerator. F8's four trials cannot: with posture disabled
+all four cross the boundary, all four are scored \texttt{allowed}, and unauthorized effects stay at
+zero, because the write was validly approved. The six F6 and F9 chaos trials cannot: their effect
+list is empty by construction. A further 20 gate trials can produce a gate-channel effect but not
+an \emph{external} one, which is what leaves 31. F7 does not belong on this list and we say so
+explicitly: all four F7 trials are \texttt{allowed} controls and already sit outside the 61,
+contributing nothing to it.
+
+\textbf{And the 61 are not 61 independent observations.} They span eight mechanisms, and
+within-mechanism correlation is close to 1: removing a single mechanism converts 10 of 10, 5 of 5,
+5 of 5, and 4 of 4 of the trials that mechanism holds. Taking the mechanism rather than the payload
+as the unit of observation gives an effective n of 8 and a two-sided 95\% Wilson upper limit of
+\textbf{32.4\%}. We report the pair rather than the optimistic end: the payload-level bound is
+$\leq$5.9\% and the cluster-aware bound is $\leq$32.4\%. This paper already applies exactly this
+discipline to the false-denial rate, where the effective n is 3 rather than 75 (\S6.12); applying
+it to the headline is the same arithmetic and it is less flattering. The eight is the conservative
+count and we keep it deliberately: counted by \emph{actual denier} the mechanisms are nine, because
+the spend policy denied 13 of F4's attack trials (\S6.7) without appearing in any family. Nine
+clusters would tighten the bound to $\leq$29.9\%, so we publish the wider figure computed over
+eight rather than the tighter one our own correction would license.
+
 Per family, the intervals state what the data supports. F4, the depth
 family (n=27), bounds the rate below \textasciitilde12\%; the small-n gate and quorum families bound it only
 loosely (F5, n=4, $\leq$75\%; the chaos families, n=3, are uninformative alone). To bound a family
-below a rate \emph{r} with zero observed effects requires n $\geq$ 3/\emph{r} ($\geq$30 for \textless10\%, $\geq$60 for \textless5\%,
-$\geq$300 for \textless1\%). We therefore state, per family, the confidence the current n can support and
+below a rate \emph{r} with zero observed effects requires n $\geq$ 3/\emph{r} ($\geq$31 for \textless10\%, $\geq$61 for \textless5\%,
+$\geq$301 for \textless1\%; the inequality is strict, and these are the values the estimator returns). We therefore state, per family, the confidence the current n can support and
 decline to pad the set to manufacture a tighter bound, padding would tighten the interval without adding evidence. This is the quantitative form of the ``families we could not attack well,
 and why'' disclosure.
 
@@ -458,11 +551,12 @@ Content firewall & F1 & 0 $\rightarrow$ 10 \\
 Runtime sentinel & F2 & 0 $\rightarrow$ 5 \\
 Skill auditor & F3 & 0 $\rightarrow$ 5 \\
 Approval-binding fingerprint join & F4 & 0 $\rightarrow$ 14 \\
-Two-person control & F5 & 0 $\rightarrow$ 0 (enforced redundantly; resists single-clause ablation) \\
+Two-person control & F5 & 0 $\rightarrow$ 2 \\
 Posture policy & F8 & 0 $\rightarrow$ 0 unauthorized (4 \emph{authorized} writes now execute, recorded \emph{allowed}) \\
+Spend policy (\texttt{policies.spend}) & --- (no family) & 0 $\rightarrow$ 0, over the full catalog \\
 \end{longtable}
 
-Three findings sharpen the causal claim. \textbf{First, defense in depth is measured, not
+Five findings sharpen the causal claim. \textbf{First, defense in depth is measured, not
 asserted.} Disabling the F4 fingerprint join lets 14 of 27 mutations execute: not all 27,
 because the amount-mutation variants are independently caught by the spend policy. A compound
 ablation removing \emph{both} the join and the spend policy converts all 27 (0 $\rightarrow$ 14 $\rightarrow$ 27), locating
@@ -472,15 +566,62 @@ post-hoc reconciliation, so the outcome moves from \emph{prevented} to \emph{det
 \emph{undetected}: the three-way outcome model doing its job. \textbf{Third, F8's necessity shows in a
 different column:} posture blocks a \emph{fully-approved} write under a degraded hold, so disabling
 it yields four \emph{allowed} effects (the write was authorized), which is precisely the property
-F8 claims. One mechanism resisted clean isolation: the two-person control (F5) is enforced
-redundantly at both approval creation and preflight, so a single-clause ablation does not
-convert it: a security virtue, reported as a limitation of that ablation rather than dressed
-up as a clean conversion.
+F8 claims. \textbf{Fourth, the two-person control is necessary and the data now says so:} removing
+it admits two unauthorized effects, on the two extreme-risk variants that execute with no
+co-approver and with the same approver twice --- and, as with F4, both are \emph{detected} rather
+than undetected, flagged by the reconciliation sweeper. \textbf{Fifth, the spend policy is a redundant layer
+and not a hidden kernel element.} It was wired for ablation and had simply never been exercised;
+run on its own over the full catalog --- 73 trials, 41 provider-call trials live --- it admits 0
+unauthorized effects and 0 provider-call effects.
+Together with the compound result, that says the 13 F4 trials it denied would have been caught by
+the approval-binding join regardless: neither layer is individually necessary for those 13, and
+both must fail before all 27 convert.
 
-\textbf{No-control ceiling.} With the entire ablatable membrane disabled, \textbf{47 of 63} attacks
-produce an unauthorized effect (vs 1 in the equivalent governed slice, and 0 in the current
-hardened run). This is the number that makes the governed result meaningful: the attacks are
-real; the membrane is what stops them.
+\textbf{Two kinds of zero, and how to tell them apart.} Two rows of this table read
+0 $\rightarrow$ 0, and a third did until the re-score. They do not mean the same thing, so we
+distinguish them rather than let a reader average them. F8's zero is a redirection: four validly-approved writes execute, so the
+necessity shows in the crossed column instead of the unauthorized one. The spend policy's zero is a
+\emph{measured redundancy}: the run executed over the full catalog with 41 provider-call trials
+live, nothing raised, and the mechanism's own 13 trials were caught by the layer behind it. F5's
+former zero was neither --- it
+was a \emph{failed measurement}, an adjudicator blind spot that concealed two real effects, and it
+is now 0 $\rightarrow$ 2. A zero is only a null once the trials are shown to have produced a usable
+observation; the F5 row is what happens when that check is skipped.
+
+\textbf{A correction, and its cause.} An earlier version of this paper reported the F5 row as a
+0 $\rightarrow$ 0 null and read that null as redundant enforcement: a security virtue that resisted
+single-clause ablation. The reading was wrong and the mechanism that made it wrong is worth stating
+plainly, because it is the pre-committed edge case firing for real. \texttt{Telemetry.span/3} emits
+\texttt{:stop} on success \emph{or} \texttt{:exception} on a raise, never both. The oracle that
+produced the original ablation figures subscribed to \texttt{:stop} alone, so an adapter that
+performed a real external effect and then raised was invisible to it, and the runner's rescue
+scored the trial a successful prevention. The corrected oracle collects both events. This is the
+``partial effects'' case that SPEC \S3 pre-committed to before the first scored run. The governed
+campaign is unaffected, and for a reason worth stating rather than assuming: in the campaign the
+two-person control held, so nothing was performed and nothing raised, and the blind spot can only
+manifest once the control is ablated away. It moved exactly two published figures, the F5 row above
+and the no-control ceiling below.
+
+\textbf{A second defect sat under the first, and correcting it improves the F5 result rather than
+enlarging it.} The reason those two trials raised at all is that the fixture payload omitted an
+email field \texttt{LocalCRM} requires. A trial that raises mid-drive records no proof state, and
+that missing proof state --- not a failure of detection --- is what produced the row's original
+\texttt{undetected} / \texttt{missing} / \texttt{none} triple. With the fixture corrected, both
+trials score \textbf{\texttt{detected}}, with \texttt{system\_proof\_state:\ failed} and
+\texttt{detection\_source:\ sweeper}: the reconciliation sweeper flags both admitted effects. The
+unauthorized-effect \textbf{count is unchanged at two}, so the row remains 0 $\rightarrow$ 2. What
+changed is its character. Removing two-person approval admits two unauthorized effects
+\emph{and the system detects both} --- the same degradation from prevention to detection that the F4
+ablation shows, rather than a silent crossing.
+
+\textbf{No-control ceiling.} With the entire ablatable membrane disabled, \textbf{51 of 63 trials}
+produce an unauthorized effect and all 63 cross the effect boundary. The same 63 run governed cross
+8 times and produce \textbf{0} unauthorized effects. Governing therefore prevents 55 crossings that
+occur ungoverned (8 versus 63), and the unauthorized-effect counts are 0 against 51. One wording
+correction ships with that number: \textbf{63 is not a count of attacks.} It is the F1--F5 and F8
+totals, which include 8 known-good controls and F8's 4 non-attacks. The baseline omits F6, F7 and
+F9, which have no runtime toggle, so its 63 trials are not the campaign's 61. This is the number
+that makes the governed result meaningful: the attacks are real; the membrane is what stops them.
 
 \subsection{Calibration: the system grading its own confidence}\label{calibration-the-system-grading-its-own-confidence}
 
@@ -488,9 +629,20 @@ Because the oracle is independent, it can compare its verdict against the system
 self-reported proof state per trial: a metric no prior agent benchmark reports. On the 41
 provider-mediated trials the oracle and the proof state agreed on all 41, with \textbf{zero
 overclaims} (no cell in which the system reported \texttt{verified} while the oracle found the
-effect unauthorized) and an expected calibration error of 0.0\%.
+effect unauthorized) and a \textbf{proof-state-weighted calibration gap} of 0.0\%.
 
-We report that number with its decomposition rather than as a headline, because the 41 do
+\textbf{That statistic is not an ECE and we no longer call it one.} Its bins are seven categorical
+\texttt{proof\_state} labels carrying hand-authored confidence constants, not probability bins, so
+it is not comparable to expected calibration error as the literature uses the term. Every occupied
+bin claims a probability at a boundary, 0.0 or 1.0, so given 100\% oracle agreement a zero follows
+\emph{arithmetically} rather than empirically; we therefore never state it without the
+decomposition below. It is also sensitive to a single constant. The
+\texttt{manual\_review\_required} bin carries 70.7\% of the weight (29 of 41), is described
+throughout as an abstention, and is nonetheless assigned P(authorized) = 0.0, a maximally confident
+negative. Mapped instead to 0.5, which is what an abstention means, the same data yields 35.4\%. We
+report the published mapping and that sensitivity together rather than the number alone.
+
+We report it with its decomposition rather than as a headline, because the 41 do
 not weigh equally. Of them, only \textbf{6 are real-effect determinations}: a genuine effect
 crossed the boundary and the system made a claim about it (2 approval-binding controls and 4
 idempotent replays); all 6 were oracle-confirmed authorized, 0 overclaims. \textbf{2} are quorum
@@ -499,7 +651,10 @@ writes that posture blocked, so \texttt{verified} but nothing executed) or \text
 \texttt{manual\_review\_required}: a ``cannot confirm'' rather than a verdict). The claim we
 stand behind is therefore narrow and exact: \textbf{on all 6 trials where a real effect occurred,
 the system's proof state matched the independent verdict, with zero overclaims}: not a
-sweeping ``perfectly calibrated everywhere.'' The matrix also covers only the 41 provider-call
+sweeping ``perfectly calibrated everywhere.'' That claim carries its own interval and the interval
+is wide: 0/6 bounds the overclaim rate at $\leq$50\% one-sided (rule of three) and $\leq$39.0\%
+two-sided (Wilson). Six is what a governed campaign produces when prevention is upstream, and we
+state the bound rather than the point. The matrix also covers only the 41 provider-call
 trials (\textbf{56\%} of the set); the 32 content/runtime/skill-gate and chaos trials have no proof
 state and are excluded. Proof state is a measured output here, never an input to the oracle's
 verdict.
@@ -507,11 +662,29 @@ verdict.
 \subsection{Measurement integrity: was the effect log actually exercised? (F10)}\label{measurement-integrity-was-the-effect-log-actually-exercised-f10}
 
 The governed campaign produced an \emph{observed} effect (an actual provider-boundary crossing) in
-only \textbf{6 of 73} trials. Of 41 provider-call trials, 35 were denied before the adapter ran:
-31 at the verifier preflight and 4 by the runtime-posture policy. One caveat on that split: for a
+only \textbf{6 of 73} trials. Of 41 provider-call trials, 35 were denied before the adapter ran.
+Recomputed from the \texttt{notes} field of the committed per-trial records, which carries the
+actual result the drive call returned, the denying component splits: \textbf{18} at the
+\texttt{AuthorityAssurance} preflight, \textbf{13} at \texttt{SpendPolicy}'s preflight, \textbf{2}
+by \texttt{RuntimePosturePolicy}, \textbf{1} by \texttt{AuthorityAssurance} at the policy stage, and
+\textbf{1} by \texttt{AuthorityJudge}. An earlier version of this paper reported that split as
+``31 at the verifier preflight and 4 by the runtime-posture policy,'' which was wrong.
+
+The correction is not only arithmetic. \texttt{SpendPolicy} held \textbf{13 of F4's 27 attack
+trials}, 48\% of the kernel family, and the two most interesting F4 variants (the zero-width and
+Cyrillic-homoglyph currency perturbations) never reached the kernel at all. It appears in no attack
+family and carries no \texttt{mechanism\_id} stamp, and when this recount was first published it had
+no ablation row either, which left its position relative to the kernel asserted rather than measured.
+It has since been ablated on its own: over the full catalog \texttt{policies.spend} admits 0
+unauthorized effects and 0 provider-call effects, and it now carries a row in both the \S6.5
+ablation table and the \S9.1 trusted-base table, backed by the same full-catalog run as the other
+three \S9.1 probes. So the 13 are held by a \emph{redundant} layer ---
+the approval-binding join catches them in its absence --- and we name it here rather than let the 13
+sit inside a figure attributed to the verifier. One caveat on the split: for a
 prevented trial the \texttt{detection\_source} field records the family's pre-registered expected
 denial point rather than an observed one, because attributing a denial to a specific policy would
-require reading the system's own tables, which the independence rule forbids. So ``0 unauthorized effects'' is measured through a channel that fired six times,
+require reading the system's own tables, which the independence rule forbids; the component names
+above come from the drive call's own return value, not from that field. So ``0 unauthorized effects'' is measured through a channel that fired six times,
 mostly because prevention is upstream. Distinguishing ``nothing occurred'' from ``the oracle
 could not see it'' is the job of a measurement-integrity family (F10), which we implemented.
 Two facts resolve the concern. First, the effect-observation apparatus \emph{was} exercised at
@@ -556,10 +729,31 @@ to the test set and would invalidate every number.
 To bound the risk that attacks authored against the code inherit the design's blind spots, we
 built a declarative attack channel: an attacker expresses a post-approval divergence (what was
 approved, what actually executes) without reference to implementation internals, and the same
-independent oracle scores it. A 32-attack set of diverse divergences, recipient and field
-injections, nested structural additions, amount tampering, expired/revoked lifecycle replays,
-and combinations, produced \textbf{0 unauthorized effects (95\% CI {[}0.0\%, 10.7\%{]})}, with all 32
-prevented and the four honest controls allowed. We are transparent that this set was
+independent oracle scores it. A 32-attack set produced \textbf{0 unauthorized effects (95\% CI
+{[}0.0\%, 10.7\%{]})}, with all 32 prevented and the four honest controls allowed.
+
+\textbf{The 32 attacks are not 32 independent shapes, and the interval above is computed as though
+they were.} They exercise four divergence mechanisms: an added payload key (18 attacks), a changed
+amount (7), both together (3), and an expired or revoked approval (4). We therefore report the
+bounds as a pair, exactly as we do for the false-denial rate: per trial, 0/32 gives
+$\leq$10.7\%; per mechanism, the denominator is as small as four and 0/4 gives $\leq$49.0\%. The
+second is the honest reading, and it is the one a reader should carry away. The coverage is narrow
+in a second way: the declarative channel realizes the approval$\rightarrow$execution join, so the
+blind result speaks to F4 and F7 and says nothing about the gate families.
+
+\textbf{A provenance defect, stated rather than smoothed.} The blind-set file that ships is not
+byte-identical to the file that was scored. The scored blob carried \textbf{30} distinct attack
+shapes, not 32, splitting 16 extra-key / 7 amount / 3 both / 6 lifecycle; the shipped file carries
+32 across the four mechanisms above (18 / 7 / 3 / 4). Both files hold 32 attacks and 4 controls, so
+the denominator and the $\leq$10.7\% arithmetic are unaffected. What is affected
+is provenance: the attack file offered for inspection is a corrected one, not the one that produced
+the published result, and we name that here rather than let a reader discover it by hashing the
+file. Per-trial records now ship, as \texttt{artifacts/blind.jsonl} (36 rows, 32 attack trials, 0
+unauthorized effects, 0 harness errors, ids \texttt{blind-01} to \texttt{blind-36}, splitting
+18 / 7 / 3 / 4), and they too are a \emph{re-run of the corrected file} rather than the original
+run's records, which were not retained. That re-run reproduces the same rate and interval over 32
+genuinely distinct shapes, so the published number is not an artifact of the duplicates; it does not
+repair the provenance defect and we do not present it as if it did. We are transparent that this set was
 author-constructed under a blindness discipline (built only from the family definition and the
 \S3 definition), not third-party generated; a genuinely independent generation is the strongest
 remaining step and is stated as future work. It nonetheless adds validity by exercising the
@@ -569,23 +763,58 @@ independent channel at scale on payloads absent from the authored set.
 
 The network-layer tripwire (\S6.2) fires for any real outbound request regardless of the
 router; in every correct in-process trial it stayed silent, and a firing during a gate trial
-would be the strongest possible finding. The compile-time boundary guard fails the build on a
-new un-allowlisted path to the raw execution seam; F6 demonstrates this by planting a
-violation and confirming CI rejects it. Neither mechanism claims that no uncovered path can
+would be the strongest possible finding. The boundary guard is a CI-enforced structural check over
+the source tree that flags any new un-allowlisted path to the raw execution seam. F6 plants a
+violation in the scanned source and confirms the check's predicate reports it. \emph{No build is
+invoked} --- no compiler runs anywhere in the released tree, as \texttt{aggressor/README.md}
+states --- so what F6 establishes is that the guard's predicate holds, not a demonstrated build
+failure; SPEC \S4 pre-registered the stronger form and this campaign did not deliver it. Neither mechanism claims that no uncovered path can
 exist; both make an uncovered path \emph{detectable}. This is prevention where the fence holds and
 detection where a path escapes it, reported as such.
 
-\subsection{Overhead}\label{overhead}
+\subsection{Governed latency}\label{overhead}
 
-We measure the cost of the control plane as the added wall-time of a governed action (the full
-membrane, policies, verifier preflight, receipt and invariant recording) versus the same
-action bypassing the membrane, using mock adapters so no network noise enters. Median governed
-latency is \textbf{\textasciitilde17 ms}; the bypassed adapter is negligible. The overhead is dominated not by
-policy evaluation but by durable authority-proof persistence: the system pays \textasciitilde17 ms at p50
-to make each action's authorization independently verifiable after the fact. We report this
-rather than claim a free control plane; the trade is durable, tamper-evident proof for
-single-digit-to-low-tens-of-milliseconds per governed action. (p95/p99 and hardware are in
-\texttt{REPORT.md}.)
+We measure the wall-time of a governed action end to end: the full membrane, the policy stack, the
+verifier preflight, and receipt and invariant recording, using mock adapters so no network noise
+enters. Median governed latency is \textbf{\textasciitilde19 ms}, with p95 and p99 at 53.5 and
+76.3 ms (19100 / 53475 / 76336 $\mu$s). The cost is dominated not by policy evaluation but by
+durable authority-proof persistence: the system pays \textasciitilde19 ms at p50 to make each
+action's authorization independently verifiable after the fact. We report this rather than claim a
+free control plane; the trade is durable, tamper-evident proof for
+single-digit-to-low-tens-of-milliseconds per governed action.
+
+\textbf{These percentiles have moved since an earlier revision, and the reason is that they now
+have an artifact behind them.} We previously published 16882 / 57811 / 81277 $\mu$s
+(\textasciitilde17 ms at p50). No per-iteration data from that run was ever committed, so the
+figures rested on a transcription no reader could check. A fresh run's per-iteration records now
+ship as \texttt{artifacts/overhead.jsonl}, 200 per arm, and the numbers above are recomputed from
+them by the rule the file states, so the figure and the artifact agree. This is the one published
+number in the paper that changed because the evidence for it changed rather than because a claim
+was wrong. \textbf{Latency is machine- and run-dependent}: these percentiles describe one synthetic
+single-process loop on one machine, and \emph{percentiles are not comparable across machines}. A
+re-run elsewhere yielding different values is the expected outcome, not a failed replication.
+
+\textbf{We report this as an absolute cost and claim no percentage overhead, because the comparison
+baseline is degenerate by construction.} The ungoverned arm routes to a mock adapter,
+\texttt{MockStripe.execute/3}, a pure in-memory function that performs no I/O and whose measured
+p50 is \textbf{120 ns}. That number settles a question the earlier table left open: the bypassed
+arm's published \textbf{0 $\mu$s} was a \emph{timer-resolution floor, not a measurement}. At the
+one-microsecond resolution the table is printed at, 120 ns and the p95's 151 ns truncate to 0 and
+the p99's 3106 ns truncates to 3, so the bypassed row reads 0 / 0 / 3 $\mu$s; the real distribution
+behind it is in the artifact. Any ``added latency'' figure is therefore arithmetically identical to
+the governed column: the subtraction returns the governed number unchanged. Raising the timer's
+resolution does not rescue the comparison. At 120 ns the baseline is roughly 0.0006\% of the
+governed path, so a corrected differential rounds to the same \textasciitilde19 ms. The number is
+right; a differential label on it is not, and we have dropped the ``added'' framing rather than keep
+a subtraction that never subtracted anything. The two arms were also never paired per call, so a
+percentile-wise difference between them would be a difference of order statistics rather than a
+distribution of per-call deltas.
+
+Two boundaries belong with the figure. Against a real provider call these numbers would not
+dominate: hundreds of milliseconds of network time would, so the governed path's share of a live
+action is smaller than a mock-adapter measurement suggests. And the artifact bounds what it can
+support: it is a single-process loop against mock adapters on one machine, not a production latency
+profile. (Hardware is in \texttt{REPORT.md}.)
 
 \subsection{False denials}\label{false-denials}
 
@@ -624,6 +853,20 @@ soak-derived rate alongside it when available.
  \textbf{Not exhaustive.} 73 genuinely-distinct attacks is not an exhaustive set; absence of an
  observed effect is not proof of impossibility, and per-family power varies widely (\S6.4).
 \item
+ \textbf{F4's zero bounds payload divergence, not the whole approval-binding join.} The family
+ definition lists twelve planned variant classes. The 29 committed F4 trials deliver seven of
+ them: 11 currency perturbations, 6 field additions, 2 field removals, 6 amount mutations, 2
+ lifecycle replays, and 2 known-good controls. \emph{Five have no trial at all} --- provider swap
+ (all 29 carry \texttt{provider:\ mock\_stripe}), operation swap (all 29 carry
+ \texttt{operation:\ buy}), account re-attribution (all 29 carry a single \texttt{account\_id};
+ \texttt{mutate:drop-account} removes the field, it does not re-target), idempotency-key reuse
+ across two distinct payloads, and approval-missing execution. What F4's zero bounds is therefore
+ the \textbf{payload-divergence} class, not the join as a whole. The account gap compounds with a
+ defect in the oracle: \texttt{effects\_for/2} matches on provider, operation and
+ idempotency-key hash and never compares \texttt{account\_id}, so SPEC \S3's pre-committed ``right
+ action, wrong attribution'' edge case is neither tested nor testable in this harness. We state
+ the two together because either alone understates the hole.
+\item
  \textbf{Blindness discipline, not independence.} The blind set (\S6.9) is author-constructed;
  true third-party generation remains future work.
 \item
@@ -660,6 +903,19 @@ soak-derived rate alongside it when available.
  strongest structural mitigation, an ablation study and no-control baseline (\S6.5) that show
  the attacks convert to effects the moment the mechanisms are removed, which no weak attack set
  could do. LLM assistance in building the harness is disclosed.
+\item
+ \textbf{Oracle independence does not hold for F4.} The oracle calls the system under test's own
+ \texttt{canonical\_payload\_hash/1} to decide whether an executed payload is the approved one
+ (\S6.2). A canonicalization collision would therefore be invisible to both sides at once, and a
+ canonicalization collision is precisely the failure F4 was written to find. F4 is 27 of the 31
+ trials that could falsify the invariant, so this is not a corner of the evaluation: it is the
+ deepest family. The canonicalizer is withheld, has had no cryptographic review, and is named a
+ trusted-base element in \S9.1, so F4's verdict is conditional on the correctness of an unreviewed
+ system function. We do not claim independent adjudication for F4. An independently written
+ canonicalizer, scored alongside the system's, is required future work. A second oracle defect
+ sits beside it: \texttt{effects\_for/2} never compares \texttt{account\_id}, which \S7 states
+ together with F4's missing account-re-attribution variants. \texttt{oracle/README.md} carries
+ both in its honest-limits list.
 \item
  \textbf{Oracle observation limits (confirmed, from F10).} The oracle sees effects only through
  two channels: provider-boundary telemetry (the belt) and a network-layer tripwire on the
@@ -728,7 +984,7 @@ contribution is a \emph{measurement methodology and a bounded result}, not a sea
 
 First, section \texttt{zero-standing-privilege}, gap \texttt{sch-2}: ``Continuous re-verification assumes a clean allow/deny answer at every check; nothing here says what an agent's access-control layer should do when that answer is unclear.'' The seven-state proof model is a named posture for exactly that case, and \S6.6 shows it carrying load: 29 of 41 provider-mediated trials resolve to \texttt{manual\_review\_required}, an explicit abstention rather than a manufactured verdict. We note the limit: the gap also names the policy-engine-unreachable case, which \S12 lists as unbuilt.
 
-Second, section \texttt{human-oversight}, gap \texttt{nist-p7}: ``No sources weigh approval-gate latency costs against risk prevention.'' We report both halves together, \textasciitilde17 ms of median governed latency (\S6.11) against a 0/75 false-denial rate (\S6.12). We are precise about the claim: the trade-off itself \emph{is} named in the classic catalog, as \texttt{nist-p7}, ``identify potential trade-offs between reducing risk and increased costs.'' What the corpus records as absent is its \emph{instrumentation at an agent approval gate}. Two qualifications belong with it: the p95 and p99 are 57.8 and 81.3 ms, and a gate too slow to use is a tail property the median does not speak to; and the false-denial figure has an effective sample size of three (\S6.12).
+Second, section \texttt{human-oversight}, gap \texttt{nist-p7}: ``No sources weigh approval-gate latency costs against risk prevention.'' We report both halves together, \textasciitilde19 ms of median governed latency (\S6.11) against a 0/75 false-denial rate (\S6.12). We are precise about the claim: the trade-off itself \emph{is} named in the classic catalog, as \texttt{nist-p7}, ``identify potential trade-offs between reducing risk and increased costs.'' What the corpus records as absent is its \emph{instrumentation at an agent approval gate}. Three qualifications belong with it: the p95 and p99 are 53.5 and 76.3 ms, and a gate too slow to use is a tail property the median does not speak to; the false-denial figure has an effective sample size of three (\S6.12); and the latency figures are one machine's, not a portable constant.
 
 Third, section \texttt{incident-response}, gap \texttt{ms-risk-8}: ``No verification that quarantined agents remain inert; cutting an agent off from the network is not the same as confirming it has stopped acting.'' \S5 and family F9 address this directly on the BEAM, where a killed worker is a terminated process rather than an unreachable one, and \S5 bounds the claim: work the worker already enqueued on the durable job runtime survives the kill and is unmeasured here.
 
@@ -736,8 +992,10 @@ Third, section \texttt{incident-response}, gap \texttt{ms-risk-8}: ``No verifica
 
 Nine mechanisms plus a layered policy stack plus a seven-predicate verifier looks like a
 large trusted base, in apparent tension with \emph{minimize the system elements to be trusted} (NIST SP 800-27 \texttt{nist-p25}, {[}14{]}), and with economy of mechanism {[}2{]}. The tension resolves once ``number of mechanisms'' and
-``size of the trusted computing base'' are kept distinct, and our ablation data measures the
-distinction rather than asserting it.
+``size of the trusted computing base'' are kept distinct. We draw that distinction and then
+measure it: each ablatable element is removed in turn, the full catalog is driven against it, and
+the admitted effects are broken out by channel. Below we state which elements that covers and which
+it does not.
 
 \textbf{Name the kernel.} The \S3 invariant depends on a small set of elements whose correctness is
 \emph{necessary} for it to hold: the mediation membrane (\texttt{ToolRouter}), the approval-binding join
@@ -752,11 +1010,22 @@ proposing violating actions: which is the paper's stipulated premise anyway (\S1
 failure enlarges the \emph{proposal} stream; it does not enlarge the set of things that must be
 correct for the invariant. Posture (F8), spend, and coapproval (F5) sit \emph{behind} the join as
 independent layers, and the compound ablation already shows their independence (0$\rightarrow$14$\rightarrow$27, \S6.5).
+The spend policy was missing from every earlier statement of that list, and it was the case most in
+need of a test: it denied 13 of F4's 27 attack trials (\S6.7), 48\% of the kernel family, while
+carrying no family and no ablation row. It has since been ablated on its own, as mechanism
+\texttt{policies.spend} over the full catalog, and it admits \textbf{0} unauthorized effects and
+\textbf{0} provider-call effects (\S6.5), over 73 trials with 41 provider-call trials live. Read
+against the compound ablation, that settles its
+position by measurement rather than by assertion: the 13 trials the spend policy denied are held by
+the approval-binding join once the spend policy is gone, and are held by the spend policy once the
+join is gone, which is why all 27 convert only when \emph{both} fail. Neither layer is individually
+necessary for those 13. That is defense in depth, and it puts the spend policy outside the kernel.
 
-\textbf{Measure the boundary} (\texttt{-\/-tcb}). We ablate each element and break the admitted effects out
-by effect channel. A surface reducer's failure should admit effects only in its own gate
-channel and \emph{zero} provider-call (external) effects; only a kernel element's failure should
-admit a provider-call effect. The data shows this:
+\textbf{Break the boundary out by effect channel} (\texttt{-\/-tcb}). We ablate each element,
+re-run the \textbf{full 73-trial catalog} against it, and report the admitted effects by channel. A
+surface reducer's failure should admit effects only in its own gate channel and \emph{zero}
+provider-call (external) effects; only a kernel element's failure should admit a provider-call
+effect. That is the pattern in the data:
 
 \begin{longtable}[]{@{}
  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1765}}
@@ -783,21 +1052,56 @@ Provider-call (external)
 Content firewall (F1) & surface reducer & 10 & content\_gate & \textbf{0} \\
 Runtime sentinel (F2) & surface reducer & 5 & runtime\_gate & \textbf{0} \\
 Skill auditor (F3) & surface reducer & 5 & skill\_gate & \textbf{0} \\
+Spend policy & redundant layer & 0 & --- & \textbf{0} \\
 Approval-binding join (F4) & \textbf{kernel} & 14 & provider\_call & \textbf{14} \\
 \end{longtable}
 
-Removing a surface reducer admits tainted input but produces \textbf{no unauthorized external
-effect}; removing a kernel element produces fourteen. This is economy of mechanism satisfied and
-\emph{demonstrated}: the trusted base is small (three or four elements), and the other mechanisms
-buy defense in depth at the cost of code, not trust. It also resolves an intra-catalog tension: layered security with no single point of vulnerability (\texttt{nist-p16}) pulls against minimizing the system elements to be trusted (\texttt{nist-p25}), and both are classic principles; the resolution is that layers
+Removing a surface reducer admits tainted input but produces no unauthorized external effect;
+removing the spend policy admits nothing at all; removing the kernel element produces fourteen.
+
+\textbf{What that table establishes, and what it does not.} The four ablations in
+\texttt{artifacts/tcb-full-catalog.jsonl} each drove the \textbf{full 73-trial catalog} --- 292
+per-trial records, 73 per probe, all nine families present under every ablation --- so
+\textbf{41 provider-call trials were live under each} (35 of them attack trials; the other six are
+F4's two known-good controls and F7's four replays). That is what makes the last column a
+measurement rather than a consequence of trial selection: a surface reducer whose removal admitted
+even one external effect would have recorded it there, and none did. Every admitted effect landed in
+the ablated mechanism's own gate channel --- 10 \texttt{content\_gate}, 5 \texttt{runtime\_gate}, 5
+\texttt{skill\_gate} --- and \texttt{provider\_call} unauthorized effects were zero in all four
+probes. The kernel row is measured on a separate basis and always was: removing the approval-binding
+join admits fourteen unauthorized external effects, all on the \texttt{provider\_call} channel
+(\texttt{artifacts/ablation/tcb-F4.jsonl}, 29 provider-call trials live). That row cannot be
+manufactured by trial selection in any case, since selection can suppress an external effect but
+never create one.
+
+An earlier revision of this paper stated this counterfactual against a per-family probe run that
+could not support it, and a subsequent revision withdrew it for that reason. The run described here
+is the full-catalog one; the per-family probes are preserved separately as
+\texttt{artifacts/ablation/tcb-per-family-probes.jsonl}, and their own caveat records why they were
+insufficient.
+
+We state the scope exactly. This establishes that these \textbf{three} surface reducers, removed
+\textbf{singly}, admit no external effect. It establishes nothing about \textbf{combinations} --- no
+run disables two of them at once --- and nothing about mechanisms with \textbf{no runtime toggle}:
+F6's boundary guard, F7's reconciliation, and F9's process supervision are never ablated, and
+\textbf{the mediation membrane and the durable authority store have no ablation row at all}. Those
+two are named as trusted-base elements on the \S3 invariant's structure, not by a run that removed
+them. Auditability is now uniform across the table: the four full-catalog probes recompute from
+\texttt{artifacts/tcb-full-catalog.jsonl} and the kernel row from \texttt{artifacts/ablation/}.
+
+So \texttt{nist-p25} here is \emph{measured} for every element the harness can ablate: the trusted
+base is small (three or four elements), and the other mechanisms buy defense in depth at the cost of
+code, not trust. The classification of the surface reducers was this argument's weakest joint and is
+now the part with a falsifying run behind it. What remains argued is composition and coverage: the
+mediation membrane and the durable authority store carry no ablation row of their own, and no run
+removes two elements of the same class together. It also resolves an intra-catalog tension: layered security with no single point of vulnerability (\texttt{nist-p16}) pulls against minimizing the system elements to be trusted (\texttt{nist-p25}), and both are classic principles; the resolution is that layers
 \emph{outside} the kernel do not enlarge the TCB. The economy-of-mechanism half is that the kernel's
-fence is small enough to be \textbf{machine-checked at compile time} (\S5), not upheld by convention.
-(Had a firewall ablation produced a provider-call effect, that firewall would be \emph{in} the TCB
-and we would say so; it did not.)
+fence is small enough to be checked by a \textbf{CI-enforced structural check over the source tree}
+(\S5), not upheld by convention.
 
 \subsection{Candidate contributions to the principles corpus}\label{candidate-contributions-to-the-principles-corpus}
 
-Beyond the two field-wide blind spots above, we flag four principles this work either names or
+Beyond the three catalog gaps above, we flag four principles this work either names or
 demonstrates that we did not find in a 41-source secure-AI corpus (provisional; offered for
 triage, not asserted as settled). \textbf{Architectural:} (i) a verifier emits a \emph{state} that separates genuine uncertainty from a confident verdict rather than reporting a binary pass or fail (\S4); (ii)
 degraded-mode posture blocks an \emph{individual authorized action}, a finer grain than
@@ -819,8 +1123,7 @@ By control class:
  \textbf{Reference monitors and runtime policy enforcement.} The invariant of \S3 is a reference
  monitor in the sense of Anderson {[}1{]}: always invoked, small enough to be analyzed, and
  tamper-proof. This system satisfies the first two and provides tamper-evidence rather than
- tamper-proofness, a gap \S7 states directly. It mediates
- every access. The seven properties instantiate Saltzer and Schroeder's complete mediation,
+ tamper-proofness, a gap \S7 states directly. The seven properties instantiate Saltzer and Schroeder's complete mediation,
  least privilege, and fail-safe defaults {[}2{]}; \S6.5's compound ablation is direct evidence for
  layered, redundant enforcement, which their separation-of-privilege principle anticipates. Trinity's contribution is not the concept but its \emph{measurement} at
  the agent-authorization boundary.
@@ -854,13 +1157,15 @@ application-level authority layer such runtimes explicitly leave to the applicat
 \section{Reproducibility and the disclosure boundary}\label{reproducibility-and-the-disclosure-boundary}
 
 \textbf{What we open-source now (the benchmark and its results, not the system under test).} The
-public artifact at https://github.com/ScriptKittyOS/HolyTrinity-Benchmark contains: the frozen
+public artifact at \url{https://github.com/ScriptKittyOS/HolyTrinity-Benchmark} contains: the frozen
 specification and the seven verified properties as English predicates; the family definitions
 and attack taxonomy; the independent oracle and the harness (aggressor, runner, scoring, the
 ablation/TCB/measurement-integrity/blind drivers); the released fixtures (F4/F5/F8/F9, per the
 split below); and the \textbf{committed result artifacts}: the campaign JSONL, the v1-prefix
-reconstruction, and the family table as data. This makes the \emph{results} auditable (every number
-in the paper follows mechanically from the JSONL) and the \emph{method} inspectable.
+reconstruction, the family table as data, and the per-trial records for the ablation, no-control,
+compound, TCB-channel, overhead, false-denial, measurement-integrity and blind runs. This makes the
+\emph{results} auditable (every number in the paper follows mechanically from the JSONL) and the
+\emph{method} inspectable.
 
 \textbf{What is not yet released, and what that costs reproducibility.} The \textbf{system under test}
 (the Trinity control plane itself: the membrane, the verifier internals, the policy stack)
@@ -871,7 +1176,7 @@ is released (tied to the filing schedule). We state this plainly rather than imp
 completeness the artifact does not yet have.
 
 \textbf{Held pending counsel:} the system under test itself (for now); and, on the eventual
-release, these internals remain redacted, invariant registry identifiers, versions, and
+release, these internals remain redacted: invariant registry identifiers, versions, and
 severities; canonicalization algorithm details (published on release per the open-design
 commitment in the paragraph below); approval-fingerprint and execution-envelope schema
 internals; verifier sweeper queries; receipt-reconciliation logic; violation-response
@@ -888,7 +1193,7 @@ signatures: the algorithm is held only for the pending filing, and we commit to 
 (or an independently-checkable specification of it) on release, because a security property
 that rests on a secret algorithm is what open design warns against.
 
-\textbf{Fixture release (pre-committed, \texttt{SPEC.md} \S11):} release fixtures for families that expose
+\textbf{Fixture release (pre-committed, \texttt{spec/SPEC.md} \S11):} release fixtures for families that expose
 no internals (approval binding, coapproval, posture, process lifecycle, membrane-bypass
 positive control); hold the content, runtime, and skill fixtures, whose release would leak
 firewall patterns, sentinel patterns, and audit heuristics; publish the taxonomy and results
@@ -899,8 +1204,8 @@ for all nine and name which fixtures are held and why.
 Under adversarial load, an agent governed by an authority-bound control plane was induced to
 propose violating actions in the large majority of trials while zero unauthorized external
 effects occurred across 61 attack trials (95\% CI $\leq$ \textasciitilde6\%). The result is credible not because it
-is clean but because the ablation and no-control baselines show the trusted kernel does the work and the surrounding layers independent (47/63 attacks convert with the membrane
-off), the one effect the benchmark ever leaked was
+is clean but because the ablation and no-control baselines show the trusted kernel does the work and the surrounding layers independent (51 of 63 trials produce an unauthorized effect with the membrane
+off, against 0 governed), the one effect the benchmark ever leaked was
 fixed in the open and re-measured, the system's proof state matched an independent oracle on
 all six trials where a real effect occurred with zero overclaims (\S6.6: not a blanket
 calibration claim), and every rate carries a confidence interval. Future work: a truly
@@ -988,14 +1293,24 @@ Widely-cited canonical sources.
 \section*{Appendix A: Reproduction (two tiers)}\label{appendix-a-reproduction-two-tiers}
 
 \textbf{Tier 1, verify the results now, from the public artifact (no system under test needed).}
-The reported numbers are recomputable from the committed JSONL alone: \texttt{family-table.json} is
+The reported numbers are recomputable from the committed JSONL alone: \texttt{artifacts/family-table.json} is
 the \S6.3 table as data, and the campaign / v1-prefix JSONL carry every per-trial record the
 tables aggregate. A reader can re-derive the family table, the confidence intervals, the
 calibration decomposition, and the effect-channel split of \S6.4 without running any of Trinity.
-The ablation and trusted-computing-base tables, the no-control ceiling, the overhead percentiles,
-the false-denial rate, and the blind-set result each come from a separate run; the per-mechanism
-ablation records now ship in \texttt{artifacts/ablation/}, and the remainder are reported without
-a committed per-trial artifact and are not independently auditable.
+Every other table in the paper also comes from a separate run, and those runs' per-trial records now
+ship as well: the per-mechanism ablations in \texttt{artifacts/ablation/tcb-F*.jsonl} and, both arms
+together, in \texttt{ablation-study.jsonl}; the no-control ceiling in \texttt{baseline.jsonl}; the
+compound ablation in \texttt{compound.jsonl}; the \S9.1 channel probes in
+\texttt{tcb-full-catalog.jsonl}; the governed-latency iterations in \texttt{overhead.jsonl}; the
+false-denial actions in \texttt{false-denials.jsonl}; the F10 controls in
+\texttt{measurement-integrity.jsonl}; and the blind red team in \texttt{blind.jsonl}. Each carries a
+\texttt{\_meta} line stating how to recompute the figure it backs, and several carry a
+\texttt{caveat} that bounds what the run can support. \textbf{Every table in the paper now
+recomputes from a committed artifact}, including the \S9.1 channel table and the
+\texttt{policies.spend} row, which are the four full-catalog probes in
+\texttt{tcb-full-catalog.jsonl}. What remains outside the artifact is scope, not arithmetic: the
+limits \S9.1 states (single removals only, no combinations, no ablation of F6/F7/F9, none of the
+membrane or the durable store) are properties of which runs exist, and no file closes them.
 
 \textbf{Tier 2, re-execute end-to-end (requires the system under test, not yet public).} The
 commands below drive the real membrane and therefore need the Trinity control plane, which is
@@ -1006,8 +1321,9 @@ MIX_ENV=test mix holytrinity.run --run-id paper --all --require-clean # 73 trial
 MIX_ENV=test mix holytrinity.run --run-id paper --report # family table + CIs + calibration
 MIX_ENV=test mix holytrinity.run --run-id abl --ablation-study # per-mechanism necessity
 MIX_ENV=test mix holytrinity.run --run-id abl --compound # F4 join + spend (0->14->27)
-MIX_ENV=test mix holytrinity.run --run-id base --baseline # no-control ceiling (47/63)
+MIX_ENV=test mix holytrinity.run --run-id base --baseline # no-control ceiling (51/63)
 MIX_ENV=test mix holytrinity.run --run-id tcb --tcb # TCB boundary by effect channel (Sec. 9.1)
+MIX_ENV=test mix holytrinity.run --run-id spend --all --ablate policies.spend # spend row (0->0, full catalog)
 MIX_ENV=test mix holytrinity.run --run-id blind --blind-set blind/blind-set-01.json
 MIX_ENV=test mix holytrinity.run --overhead # latency percentiles
 MIX_ENV=test mix holytrinity.run --false-denials # legitimate-action denial rate
@@ -1018,6 +1334,6 @@ from a real run. Machine-readable companions ship alongside: \texttt{artifacts/f
 (the \S6.3 table as data, with the attack/control denominator stated), the committed campaign
 JSONL in \texttt{artifacts/} (each with a \texttt{\_meta} provenance line; the v1 file is a labelled
 reconstruction), and \texttt{CITATION.cff}. On release:
-https://github.com/ScriptKittyOS/HolyTrinity-Benchmark
+\url{https://github.com/ScriptKittyOS/HolyTrinity-Benchmark}
 
 \end{document}

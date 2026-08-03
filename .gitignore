@@ -21,3 +21,7 @@ deps/
 *.beam
 erl_crash.dump
 .DS_Store
+
+# Python bytecode from running the verifiers
+__pycache__/
+*.pyc
