@@ -708,7 +708,8 @@ of attacks. The trusted-base claim of principle 9 has since been measured rather
 each ablatable element was removed in turn with the full 73-trial catalog driven against it, so
 41 provider-call trials were live under every ablation (35 of them attack trials), and removing
 a surface reducer admits effects only in that mechanism's own gate channel and zero external
-effects (0→10, 0→5, 0→5), while removing the approval-binding join admits fourteen. Because the
+effects (0→10, 0→5, 0→5), while removing the approval-binding join admits fourteen and
+removing two-person control admits two. Because the
 external-effect-capable trials were live, that zero is a result the run could have contradicted
 and did not. What the run does not cover is stated as scope rather than left implicit: each
 element is removed singly, never in combination; the mechanisms with no runtime toggle (the
