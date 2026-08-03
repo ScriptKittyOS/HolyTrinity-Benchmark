@@ -29,7 +29,7 @@ compromised agent" and "the agent's memory is never the authority" structural ra
 aspirational, and a set of CI-enforced structural invariants that fence boundary coverage
 against regression. I am deliberate about what this paper does not contain: it presents no
 security evaluation of its own. It states an architecture, a threat model, an invariant, and a
-proposed evaluation. That evaluation has since been performed and is reported separately; it
+proposed evaluation. That evaluation has since been performed and is reported separately [32]; it
 measured an unauthorized-effect rate of zero across 61 attack trials (95% CI [0.0%, 5.9%]), a
 benign-workload false-denial rate of zero over 75 legitimate approved actions (0/75; 95% CI
 [0.0%, 4.9%], effective n=3), and a median governed-action latency of about 19 ms, reported as
@@ -127,7 +127,7 @@ This paper contributes:
 
 I state the following plainly and early, because the credibility of an architecture paper with
 no security evaluation depends on not overclaiming. I do not claim that this system is secure.
-The evaluation proposed in Section 12 has since been run and is reported separately; it
+The evaluation proposed in Section 12 has since been run and is reported separately [32]; it
 measured the unauthorized-effect rate, the benign-workload false-denial rate, and the
 governed-action latency this section originally listed as unmeasured. It did not measure
 overhead as a differential against an ungoverned baseline; Section 11 says why. Those results
@@ -692,7 +692,7 @@ structures. This establishes that the system does what the specification says un
 conditions.
 
 What has since been measured. The evaluation proposed in Section 12 was executed and is
-reported separately. Against 73 trials, 61 attack trials and 12 known-good controls across
+reported separately [32]. Against 73 trials, 61 attack trials and 12 known-good controls across
 seven induced-violation families, one posture-enforcement family, and one
 reconciliation-correctness control, it measured zero unauthorized external effects (95% CI
 [0.0%, 5.9%]), zero false denials over 75 legitimate approved actions (0/75; 95% CI [0.0%,
@@ -772,7 +772,7 @@ worst-case output at every step. If the architecture's central claim holds, the
 unauthorized-effect rate remains zero even when the agent is wholly adversarial, because the
 agent was never the authority. This is falsifiable: a single unauthorized effect under the
 adversarial oracle refutes invariant *I* of Section 5. This test has since been run and is
-reported separately. Across 61 attack trials it observed zero unauthorized external effects.
+reported separately [32]. Across 61 attack trials it observed zero unauthorized external effects.
 One earlier run recorded a single scored failure: a poisoned skill that passed the
 deterministic auditor of M6. Under the definition above that event does not refute *I*, because
 nothing reached an adapter and no provider state changed; it refutes M6's own claim. The
@@ -934,8 +934,9 @@ deployed system must drive to zero.
 
 ## Appendix B: Notes for reviewers
 
-Every empirical claim in this paper about the system is a conformance claim or an explicitly
-labeled absence; there are no measured security results because none exist. The AgentBound
+Every empirical claim in this paper about the system is a conformance claim, an explicitly
+labeled absence, or a result reported in the separately published evaluation [32] and cited as
+such; this paper contains no security measurement of its own. The AgentBound
 differentiation in Section 2.4 rests on the published description rather than the source and
 should be re-verified; note also that two arXiv preprints carry that name and the correct
 identifier is arXiv:2606.30970. The claim of BEAM-substrate novelty in Section 9.3 is an
@@ -1051,6 +1052,11 @@ model, and evaluation definitions with stable identifiers, is published alongsid
     Croft, X. Davies, J. Patel, R. Kirk, N. Burnikell, Y. Gal, D. Hendrycks, J. Z. Kolter, and
     M. Fredrikson. Security challenges in AI agent deployment: Insights from a large scale
     public competition. arXiv:2507.20526, 2025. https://arxiv.org/abs/2507.20526 [Preprint.]
+32. A. Croft. Authority-Bound Agentic Execution: Measuring Unauthorized Effect Under
+    Adversarial Load. 2026. https://doi.org/10.5281/zenodo.21755869 [Preprint. The companion
+    evaluation of the architecture specified here. Concept DOI: it resolves to the latest
+    version. Every measured result this paper attributes to a separately published
+    evaluation is reported there.]
 
 ---
 

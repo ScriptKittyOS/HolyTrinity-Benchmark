@@ -53,18 +53,36 @@ than taking on trust. Two things make it checkable, and a third bounds it:
 
 ## Status
 
-Both papers are deposited on Zenodo as preprints under CC-BY-4.0, both at v1.1 dated 2026-08-02.
+Both papers are deposited on Zenodo as preprints under CC-BY-4.0.
 
-| Paper | Concept DOI (cite this) | v1.1 version DOI |
-|---|---|---|
-| The Model Proposes, the System Authorizes | `10.5281/zenodo.21754762` | `10.5281/zenodo.21764616` |
-| Authority-Bound Agentic Execution | `10.5281/zenodo.21755869` | `10.5281/zenodo.21764581` |
+| Paper | Concept DOI (cite this) | Latest deposit | Matches this directory? |
+|---|---|---|---|
+| The Model Proposes, the System Authorizes | `10.5281/zenodo.21754762` | `10.5281/zenodo.21764616` | **no — re-deposit pending** |
+| Authority-Bound Agentic Execution | `10.5281/zenodo.21755869` | `10.5281/zenodo.21780658` | yes |
 
 Cite the concept DOI unless you mean one specific version; it resolves to whatever the current
-version is. Both v1.1 deposits hold exactly the sources in this directory, verified by hash, so the
-corrections listed below are in the archived copies as well as here. The v1.0 deposits
-(`10.5281/zenodo.21754763` and `10.5281/zenodo.21755870`) hold the pre-correction drafts and are
-superseded; do not quote them.
+version is.
+
+**On the correspondence between the archive and this directory, stated exactly.** Zenodo records
+are immutable once published: a deposit's files cannot be edited, only superseded by a new version.
+So the archive tracks this directory only as fast as new versions are minted, and right now the two
+papers are in different states.
+
+`10.5281/zenodo.21780658` is the current deposit of the evaluation paper and holds
+`authority-bound-agentic-execution.tex` as it stands here. It supersedes `10.5281/zenodo.21764581`,
+which predates the corrections in `../CHANGELOG.md` — three published figures moved (the F5
+ablation, the no-control ceiling, and the governed-latency percentiles) and several claims were
+narrowed. Do not quote the superseded version for any of them.
+
+`the-model-proposes-the-system-authorizes.tex` has since changed too — Appendix B's reviewers' note
+no longer says the paper has no measured results, because the companion evaluation now exists and
+is reported in §11 and §12, and that evaluation is now a numbered reference rather than four
+uncited mentions of "reported separately". **The latest deposit, `10.5281/zenodo.21764616`, does
+not contain those changes.** Until a new version is minted, cite the concept DOI and read the
+source here for the current text.
+
+The v1.0 deposits (`10.5281/zenodo.21754763` and `10.5281/zenodo.21755870`) hold the original
+pre-correction drafts and are superseded twice over; do not quote them.
 
 Both papers were also submitted to arXiv. Neither is announced, so neither has an arXiv identifier.
 
