@@ -247,7 +247,7 @@ and nothing raised; the blind spot only manifests once the control is ablated aw
 
 **And the corrected row is a better result than the one it replaces, not just a larger number.**
 Both converted trials score `detected`, not `undetected`: `system_proof_state: failed`,
-`detection_source: sweeper`, detection latency 3 ms and 0 ms. The reconciliation sweeper caught both
+`detection_source: invariant_check`. The invariant check caught both
 effects. So removing two-person approval admits 2 unauthorized effects **and the system flags both**
 — degradation from prevention to detection, which is the three-way outcome model behaving exactly as
 F4's ablation does, not a silent failure. The earlier `undetected`/`missing`/`none` reading was
@@ -656,8 +656,8 @@ happened. Both entries below preserve the failure *and* record what was done.
   trials drove omitted an email field `LocalCRM` requires, which is *why* they raised mid-drive; a
   trial that raises records no proof state, and that missing proof state is what produced the
   original `undetected` / `missing` / `none` triple. With the fixture corrected the same two trials
-  score **`detected`**, `system_proof_state: failed`, `detection_source: sweeper` — the
-  reconciliation sweeper flags both. The unauthorized-effect **count is unchanged at 2**, so `0 → 2`
+  score **`detected`**, `system_proof_state: failed`, `detection_source: invariant_check` — the
+  invariant check flags both. The unauthorized-effect **count is unchanged at 2**, so `0 → 2`
   stands; what changed is that the failure mode is now correctly recorded as degradation to
   detection rather than as a silent crossing. Two defects, one row: an adjudicator that could not
   see the effect, and a fixture that made the trial raise before the system could record its verdict

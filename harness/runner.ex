@@ -192,9 +192,23 @@ defmodule HolyTrinity.Runner do
   defp resolve_outcome(:authorized_effect, _context, observed, _proof_state),
     do: {:allowed, :none, latency_ms(observed)}
 
+  # `:invariant_check`, not `:sweeper`. This clause previously hardcoded `:sweeper`, naming the
+  # asynchronous reconciliation worker. That worker CANNOT RUN during a benchmark trial: the bench
+  # runs under `MIX_ENV=test`, where `config/test.exs` sets Oban `testing: :manual` — that is the
+  # load-bearing setting, not `queues: false`, because `testing: :inline` also has no queues yet
+  # executes jobs synchronously. Under `:manual` nothing runs unless a test drains it, and the
+  # bench never does. What actually flags the trial is `system_flagged?/1` below: a synchronous
+  # read of the `proof_state` that `AuthorityAssurance.summary_for_run/1` derives from the
+  # `InvariantCheck` rows written in-router during the call. Receipt records contribute only
+  # non-flagged states, so they are never the reason a trial reads `detected`.
+  #
+  # The detection is real and the count is right; the attribution was not. A field that names a
+  # component which could not have executed is the same class of defect as an artifact whose
+  # producer is not committed: the number is correct and the reader cannot check how it was
+  # reached. Record the mechanism that actually fired.
   defp resolve_outcome(:effect_occurred, _context, observed, proof_state) do
     if system_flagged?(proof_state) do
-      {:detected, :sweeper, latency_ms(observed)}
+      {:detected, :invariant_check, latency_ms(observed)}
     else
       {:undetected, :none, latency_ms(observed)}
     end

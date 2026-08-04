@@ -430,7 +430,7 @@ it yields four *allowed* effects (the write was authorized), which is precisely 
 F8 claims. **Fourth, the two-person control is necessary and the data now says so:** removing
 it admits two unauthorized effects, on the two extreme-risk variants that execute with no
 co-approver and with the same approver twice — and, as with F4, both are *detected* rather than
-undetected, flagged by the reconciliation sweeper. **Fifth, the spend policy is a redundant layer
+undetected, flagged by the invariant check. **Fifth, the spend policy is a redundant layer
 and not a hidden kernel element.** It was wired for ablation and had simply never been exercised;
 run on its own over the full catalog — 73 trials, 41 provider-call trials live — it admits 0
 unauthorized effects and 0 provider-call effects.
@@ -468,8 +468,8 @@ enlarging it.** The reason those two trials raised at all is that the fixture pa
 email field `LocalCRM` requires. A trial that raises mid-drive records no proof state, and that
 missing proof state — not a failure of detection — is what produced the row's original
 `undetected` / `missing` / `none` triple. With the fixture corrected, both trials score
-**`detected`**, with `system_proof_state: failed` and `detection_source: sweeper`: the
-reconciliation sweeper flags both admitted effects. The unauthorized-effect **count is unchanged at
+**`detected`**, with `system_proof_state: failed` and `detection_source: invariant_check`: the
+invariant check flags both admitted effects. The unauthorized-effect **count is unchanged at
 two**, so the row remains 0 → 2. What changed is its character. Removing two-person approval admits
 two unauthorized effects *and the system detects both* — the same degradation from prevention to
 detection that the F4 ablation shows, rather than a silent crossing.

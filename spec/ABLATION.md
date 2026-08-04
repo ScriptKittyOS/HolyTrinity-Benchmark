@@ -168,8 +168,8 @@ control is correctly *allowed* — that is the point of keeping controls in the 
 - **F5 — demonstrated necessity, recovered from a measurement artifact.** Ablating the
   *preflight* two-person clause converts **2 of the 4** trials: `no-coapproval-extreme-risk`
   and `same-approver-coapprove-extreme-risk` go `prevented → detected`, with
-  `system_proof_state: failed`, `detection_source: sweeper` and `effects_observed` `0 → 1` each.
-  **Removing two-person approval admits 2 unauthorized effects, and the reconciliation sweeper
+  `system_proof_state: failed`, `detection_source: invariant_check` and `effects_observed` `0 → 1` each.
+  **Removing two-person approval admits 2 unauthorized effects, and the invariant check
   detects both** — the same prevention-to-detection degradation the F4 row shows, not a silent
   crossing. The other two trials exercise approval *lifecycle* (expired, revoked)
   and stay prevented by the approval-binding lifecycle checks — a different mechanism, correctly
@@ -190,7 +190,7 @@ control is correctly *allowed* — that is the point of keeping controls in the 
   mid-drive records no proof state, and that missing proof state — not a failure of detection — is
   what produced the row's original `undetected` / `missing` / `none` triple. With the fixture
   corrected, the unauthorized-effect **count is unchanged at 2** and both trials score `detected`
-  with `proof_state: failed` and `detection_source: sweeper`. Two separate defects, one row: an
+  with `proof_state: failed` and `detection_source: invariant_check`. Two separate defects, one row: an
   adjudicator that could not see the effect, and a fixture that made the trial raise before the
   system could record a verdict on it.
 

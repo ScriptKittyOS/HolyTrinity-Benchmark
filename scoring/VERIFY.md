@@ -415,7 +415,9 @@ Three further limits worth stating plainly:
    observation** (`REPORT.md` §Measurement integrity states this). The verifier reports the
    denial-point table as provenance and labels it as such — this is why the published 31/4
    split is retracted above. Separately, the value `compile_time` appears on 6 trials but is
-   not in the frozen SPEC §7 enum (`preflight|policy|sentinel|firewall|sweeper|none`); the
+   not in the frozen SPEC §7 enum (`preflight|policy|sentinel|firewall|sweeper|none`) — as is
+   `invariant_check`, which the ablation artifacts carry on their 118 `detected` trials, because
+   the `sweeper` §7 named cannot run in the bench environment (`spec/PACKAGING-NOTES.md`); the
    verifier flags this in its `ADVISORY` section without failing the run.
 3. **The verifiers read only the *scored* fields.** They never read `notes` or
    `_meta.caveat`, which is where several provenance and attribution defects live — the

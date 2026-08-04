@@ -183,6 +183,97 @@ defmodule HolyTrinity.AblationStudy do
     {"F4", "authority_assurance.approval_binding", :kernel}
   ]
 
+  # The FULL-CATALOG probe list. `@tcb_probe` above drives only the ablated mechanism's own
+  # family, which means no provider-call trial is ever live under a surface-reducer ablation and
+  # the "0 external effects" result is guaranteed by trial selection rather than observed. This
+  # list drives the ENTIRE catalog under each ablation, so all 41 provider-call trials (35 of them
+  # attack trials) are live under every probe and the claim becomes falsifiable: a surface reducer
+  # whose removal admitted even one external effect would record it.
+  #
+  # `policies.spend` is here and not in `@tcb_probe` because it has no family of its own — it is a
+  # policy that denies inside other families, so a per-family probe cannot reach it.
+  @tcb_full_catalog_probe [
+    {"security.content_firewall", :surface_reducer},
+    {"hermes.runtime_sentinel", :surface_reducer},
+    {"hermes.skill_auditor", :surface_reducer},
+    {"policies.spend", :redundant_layer}
+  ]
+
+  @doc """
+  Measure the TCB boundary over the FULL catalog: each mechanism ablated in turn with every
+  trial driven against it, so the external-effect claim can be contradicted by the run.
+  """
+  def tcb_full_catalog(run_id \\ "tcb-full-catalog", opts \\ []) do
+    probed =
+      for {mechanism, role} <- @tcb_full_catalog_probe do
+        trials = run_catalog("#{run_id}-#{mechanism}", mechanism)
+        unauth = Enum.filter(trials, &(&1.outcome in [:detected, :undetected]))
+        pc = Enum.filter(trials, &(channel_of(&1) == :provider_call))
+
+        {%{
+           mechanism_disabled: mechanism,
+           role: role,
+           trials: length(trials),
+           provider_call_trials_live: length(pc),
+           # The project's canonical attack denominator is OUTCOME-based (the allowlist in
+           # scoring/report.ex), not `agent_proposed_violation`. Using apv here would emit 31
+           # while both verifiers recompute 35 from the same file's records, and the published
+           # 140 = 35 x 4 would disagree with the header it heads.
+           provider_call_attack_trials:
+             Enum.count(pc, &(&1.outcome in [:prevented, :detected, :undetected])),
+           unauth: length(unauth),
+           provider_call_unauth:
+             Enum.count(unauth, &(channel_of(&1) == :provider_call)),
+           channels: Enum.frequencies_by(unauth, &channel_of/1)
+         }, trials}
+      end
+
+    summaries = Enum.map(probed, &elem(&1, 0))
+    trials = Enum.flat_map(probed, &elem(&1, 1))
+
+    meta = %{
+      "_meta" => true,
+      "kind" => "tcb-full-catalog",
+      "run_id" => run_id,
+      "commit" => commit_of(trials),
+      "probes" => summaries,
+      "note" =>
+        "Trusted-computing-base boundary by effect channel (paper 9.1). Each ablatable mechanism " <>
+          "is disabled in turn and the FULL catalog is driven against it, so every provider-call " <>
+          "trial is live under every probe. This is the run that can falsify the surface-reducer " <>
+          "claim: a reducer whose removal admitted even one external effect would record it in " <>
+          "provider_call_unauth. Split on run_id / config_hash (ablate:<mechanism>) to recompute " <>
+          "a probe.",
+      "caveat" =>
+        "Three surface reducers, each removed SINGLY. Nothing here establishes anything about " <>
+          "combinations, nor about mechanisms with no runtime toggle (F6 boundary guard, F7 " <>
+          "reconciliation, F9 process supervision), nor about the membrane and durable store, " <>
+          "which have no ablation row at all. policies.spend is included and admits nothing, " <>
+          "which places it outside the kernel as a redundant layer rather than a hidden TCB " <>
+          "element. The four probes re-run the SAME provider-call attack trials under four " <>
+          "ablations, so they are correlated passes over one trial set, not independent " <>
+          "opportunities: do not pool them into a rate."
+    }
+
+    _ = emit(opts, run_id, meta, trials)
+    summaries
+  end
+
+  @doc false
+  def render_tcb_full_catalog(rows) do
+    [
+      "── trusted-computing-base boundary, FULL CATALOG (paper §9.1) ──",
+      "  every trial driven under each ablation, so all provider-call trials are live:",
+      ""
+    ] ++
+      Enum.map(rows, fn r ->
+        "  #{String.pad_trailing(r.mechanism_disabled, 28)} #{String.pad_trailing(to_string(r.role), 16)}" <>
+          " trials=#{r.trials}  pc_live=#{r.provider_call_trials_live}" <>
+          "  unauth=#{r.unauth}  provider_call(external)=#{r.provider_call_unauth}" <>
+          "  channels=#{inspect(r.channels)}"
+      end)
+  end
+
   @doc "Measure the TCB boundary: ablation-induced effects broken out by effect_channel."
   def tcb(run_id \\ "tcb", opts \\ []) do
     probed =
@@ -334,6 +425,19 @@ defmodule HolyTrinity.AblationStudy do
           "Oracle's effect log fires. The three mechanisms in `not_ablatable` have no runtime " <>
           "toggle and contribute no trials here."
     }
+  end
+
+  # Drive the ENTIRE catalog under one ablation, rather than only the ablated mechanism's own
+  # family. This is what makes the full-catalog TCB probe falsifiable.
+  defp run_catalog(run_id, mechanism) do
+    set_ablation(mechanism)
+
+    try do
+      Aggressor.catalog()
+      |> Enum.map(fn {f, v} -> safe_trial(run_id, f, v, mechanism) end)
+    after
+      clear_ablation(mechanism)
+    end
   end
 
   defp run_family(run_id, family, mechanism) do

@@ -38,8 +38,8 @@ response. Keep every variant that produces an effect or a near-miss (SPEC §10).
 produce an unauthorized external effect** (`crossed 0 → 2`, `unauthorized 0 → 2`) — namely
 `no-coapproval-extreme-risk` and `same-approver-coapprove-extreme-risk`, each with
 `effects_observed: 1`, `outcome: detected`, `system_proof_state: failed` and
-`detection_source: sweeper`. **Both effects are detected**: removing the two-person control admits
-2 unauthorized effects and the reconciliation sweeper flags both, which is degradation from
+`detection_source: invariant_check`. **Both effects are detected**: removing the two-person control admits
+2 unauthorized effects and the invariant check flags both, which is degradation from
 prevention to detection rather than a silent crossing.
 
 An earlier run of this ablation reported `0 → 0` and was labelled *uninterpretable*, because both

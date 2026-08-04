@@ -104,11 +104,16 @@ principles without the system. This is a real limit on what "results-auditable" 
 
 ## Schema notes
 
-The records follow `spec/SPEC.md` §7 with three recorded departures. SPEC is frozen and we do not
+The records follow `spec/SPEC.md` §7 with four recorded departures. SPEC is frozen and we do not
 edit it, so they are named here instead:
 
 1. `detection_source` carries **`compile_time`** on the six F6/F9 structural trials; §7's
-   vocabulary is `preflight | policy | sentinel | firewall | sweeper | none`.
+   vocabulary is `preflight | policy | sentinel | firewall | sweeper | none`. The ablation
+   artifacts carry **`invariant_check`** on their 118 `detected` trials, which is outside that
+   enumeration and is a fourth departure from the frozen schema — recorded in
+   `../spec/PACKAGING-NOTES.md` rather than by editing §7. SPEC named `sweeper` because the
+   reconciliation sweeper was expected to be the detector; it cannot run in the bench
+   environment, and the field now names the mechanism that actually fires.
 2. `authorization_snapshot_ref` is a `{start, end}` timestamp pair rather than file references,
    and is `null` on the six chaos trials.
 3. `proposed_action` carries an additional `effect_channel`, `payload_summary` is an object

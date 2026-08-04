@@ -48,7 +48,8 @@ defmodule Mix.Tasks.Holytrinity.Run do
           blind_set: :string,
           compound: :boolean,
           measurement_integrity: :boolean,
-          tcb: :boolean
+          tcb: :boolean,
+          tcb_full_catalog: :boolean
         ],
         aliases: [f: :family, v: :variant]
       )
@@ -86,6 +87,12 @@ defmodule Mix.Tasks.Holytrinity.Run do
         measure(
           fn -> HolyTrinity.AblationStudy.tcb(run_id, artifact(run_id)) end,
           &HolyTrinity.AblationStudy.render_tcb/1
+        )
+
+      Keyword.get(opts, :tcb_full_catalog) ->
+        measure(
+          fn -> HolyTrinity.AblationStudy.tcb_full_catalog(run_id, artifact(run_id)) end,
+          &HolyTrinity.AblationStudy.render_tcb_full_catalog/1
         )
 
       Keyword.get(opts, :baseline) ->

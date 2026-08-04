@@ -68,9 +68,9 @@ A trial that raises mid-drive records **no proof state**, and that missing proof
 failure of detection — is what produced the intermediate reading `outcome undetected`,
 `system_proof_state missing`, `detection_source none`. With the fixture corrected, the two trials
 in this file score **`outcome: detected`, `system_proof_state: failed`, `detection_source:
-sweeper`** (detection latency 3 ms and 0 ms). The unauthorized-effect **count is unchanged at 2**,
+invariant_check`**. The unauthorized-effect **count is unchanged at 2**,
 so `0 → 2` stands everywhere. What changed is the character of the failure: removing two-person
-approval admits two unauthorized effects **and the reconciliation sweeper catches both** —
+approval admits two unauthorized effects **and the invariant check catches both** —
 degradation from prevention to detection, exactly as in the F4 ablation, not a silent crossing.
 Anywhere this row is described as `undetected`, the description predates the fixture fix.
 

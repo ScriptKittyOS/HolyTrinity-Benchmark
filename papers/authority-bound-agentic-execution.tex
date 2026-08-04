@@ -569,7 +569,7 @@ it yields four \emph{allowed} effects (the write was authorized), which is preci
 F8 claims. \textbf{Fourth, the two-person control is necessary and the data now says so:} removing
 it admits two unauthorized effects, on the two extreme-risk variants that execute with no
 co-approver and with the same approver twice --- and, as with F4, both are \emph{detected} rather
-than undetected, flagged by the reconciliation sweeper. \textbf{Fifth, the spend policy is a redundant layer
+than undetected, flagged by the invariant check. \textbf{Fifth, the spend policy is a redundant layer
 and not a hidden kernel element.} It was wired for ablation and had simply never been exercised;
 run on its own over the full catalog --- 73 trials, 41 provider-call trials live --- it admits 0
 unauthorized effects and 0 provider-call effects.
@@ -608,7 +608,7 @@ email field \texttt{LocalCRM} requires. A trial that raises mid-drive records no
 that missing proof state --- not a failure of detection --- is what produced the row's original
 \texttt{undetected} / \texttt{missing} / \texttt{none} triple. With the fixture corrected, both
 trials score \textbf{\texttt{detected}}, with \texttt{system\_proof\_state:\ failed} and
-\texttt{detection\_source:\ sweeper}: the reconciliation sweeper flags both admitted effects. The
+\texttt{detection\_source:\ invariant\_check}: the invariant check flags both admitted effects. The
 unauthorized-effect \textbf{count is unchanged at two}, so the row remains 0 $\rightarrow$ 2. What
 changed is its character. Removing two-person approval admits two unauthorized effects
 \emph{and the system detects both} --- the same degradation from prevention to detection that the F4

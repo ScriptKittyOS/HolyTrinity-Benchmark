@@ -42,7 +42,7 @@
 > published figures are recomputed from it. Item 3's `p50 ≈ 17 ms` below is therefore the
 > superseded figure; the correction it recommends — report governed latency, drop the
 > added/overhead framing — is unchanged and still applied. (d) The two converted F5 ablation
-> trials now score `detected` / `failed` / `sweeper` rather than `undetected` / `missing` /
+> trials now score `detected` / `failed` / `invariant_check` rather than `undetected` / `missing` /
 > `none`, at the same count of 2.
 >
 > Read it as history: what one adversarial review surfaced, and when.

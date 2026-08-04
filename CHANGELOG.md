@@ -1,5 +1,66 @@
 # Changelog
 
+## v1.2 — 2026-08-03
+
+Two provenance defects found by an independent review of the v2.0 plan, which asked a question
+earlier reviews had not: **does committed code produce every shipped artifact, and does every
+field mean what it says?** Both answers were no.
+
+**No published RESULT moves** — no rate, interval, denominator, count or verdict. One field does:
+`detection_latency_ms` varies from run to run, because it records the provider-call duration
+rather than a time to detection. It was quoted in prose as "3 ms and 0 ms"; that figure is now
+omitted, because a number that differs between two artifacts of the same experiment is not a
+finding.
+
+### The detecting component was misattributed
+
+`harness/runner.ex` hardcoded `detection_source: sweeper` on every `detected` trial. The
+reconciliation sweeper is an asynchronous Oban worker, and the benchmark runs under `MIX_ENV=test`
+where `config/test.exs` sets Oban `testing: :manual` — nothing executes unless a test drains the
+queue, and the bench never does, so **it cannot run during a trial.** What actually flags the trial is a
+synchronous read of the `proof_state` derived from the `InvariantCheck` rows written in-router
+during the call. Receipt records contribute only non-flagged states, so they are never the reason
+a trial reads `detected`.
+
+The detection is real and the count is right; the attribution was not. Corrected to
+`invariant_check` in the harness, in the 118 affected records across six artifacts, and at every
+prose site that named the sweeper as the detector — fourteen in all, including the sentence in
+§6.5 of the evaluation paper asserting that "the reconciliation sweeper flags both admitted
+effects." The departure from SPEC §7's frozen `detection_source` enumeration is recorded in
+`spec/PACKAGING-NOTES.md` rather than by editing the spec.
+
+What this does **not** change: F5's ablation is still `0 → 2`; both effects still crossed; the
+system still flagged both, so they are still `detected` rather than `undetected`. Removing
+two-person approval admits two unauthorized effects and the system catches both. Only the name of
+the catching component was wrong.
+
+### An artifact had no committed producer
+
+`artifacts/tcb-full-catalog.jsonl` — which `scoring/VERIFY.md` designates as *"the falsifiable
+version of the claim, and the one that carries evidential weight"* for §9.1 — was assembled by an
+ad-hoc script that was never committed. The underlying runs were real
+(`mix holytrinity.run --all --ablate <mechanism>`), and the file's numbers are correct and
+independently recomputed by both verifiers. But a reader could not regenerate it from source.
+
+`AblationStudy.tcb_full_catalog/2` now produces it, exposed as `--tcb-full-catalog`. Regenerated
+from that code, the artifact reproduces the previous figures exactly: four probes, 73 trials each,
+**41 provider-call trials live** under every ablation, unauthorized effects 10 / 5 / 5 / 0, and
+**zero external effects** in all four.
+
+This is the third instance in this project of a corrected artifact shipping as though it were the
+one that produced the result — after the oracle and the blind set — and the first that was
+introduced *while fixing that class of defect*. The rule is now explicit in the v2 plan: every
+shipped artifact must be regenerable from a clean checkout by committed code, enforced in CI.
+
+**This patch fixes one instance, not the class.** A review of all eighteen shipped artifacts found
+that **nine** still lack a committed producer. Eight carry a hand-authored `_meta` header — both
+campaign files and the six per-family ablation files; their trial records are genuine and both
+verifiers recompute every published number from them, but the headers were written by hand. The
+ninth, `family-table.json`, has no `_meta` and no trial records at all, and no producer anywhere.
+Closing this is Gate A1 of the v2 plan and is not claimed here.
+
+---
+
 ## v1.1 — 2026-08-03
 
 The first revision after `44b57e9`, the published release. The campaign was re-scored under a
@@ -47,14 +108,15 @@ the tables that reported it.
 #### A second defect underneath F5's, found while re-labelling the row
 
 The two converted F5 trials now score **`detected`**, `system_proof_state: failed`,
-`detection_source: sweeper` — previously `undetected` / `missing` / `none`. The cause of the old
+`detection_source: invariant_check` (recorded as `sweeper` at the time; corrected in v1.2) —
+previously `undetected` / `missing` / `none`. The cause of the old
 labels was a fixture bug: the payload omitted an email field `LocalCRM` requires, so both trials
 raised mid-drive, and a trial that raises records no proof state at all. The **raise**, not a
 detection failure, produced the `undetected`.
 
 The unauthorized-effect count is **unchanged at 2**, so `0 → 2` stands everywhere. The result is
 better than the label it replaces: removing two-person approval admits 2 unauthorized effects
-**and the reconciliation sweeper detects both** — degradation to detection, as in the F4 ablation,
+**and the invariant check detects both** — degradation to detection, as in the F4 ablation,
 not a silent failure.
 
 #### Why the latency figures moved

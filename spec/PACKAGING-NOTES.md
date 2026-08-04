@@ -57,15 +57,26 @@ Three more, found in review. All three are recorded here rather than fixed in `S
 
 ## Departures between the frozen schema and the shipped artifacts
 
-`SPEC.md` §7 fixes the trial-record schema. Three departures are present in the committed
+`SPEC.md` §7 fixes the trial-record schema. Four departures are present in the committed
 artifacts and are documented in `../artifacts/README.md` rather than by editing §7:
 
 1. `detection_source` carries `compile_time` on the six F6/F9 structural trials, which is outside
    §7's enumeration.
 2. `authorization_snapshot_ref` is a `{start, end}` timestamp pair, not the snapshot *file
    references* §7 specifies; the raw approval-record snapshots are not published.
+
 3. `proposed_action` carries an extra `effect_channel`; `payload_summary` is an object rather than
    a string; and the gate and chaos trials carry `provider: null` / `operation: null`.
+
+4. `detection_source` carries `invariant_check` on the 118 `detected` trials in the ablation
+   artifacts. §7's enumeration is `preflight | policy | sentinel | firewall | sweeper | none`, so
+   this is outside it. §7 named `sweeper` because the asynchronous reconciliation worker was
+   expected to be the detector. It cannot run in the bench environment — `config/test.exs` sets
+   Oban `testing: :manual`, so no job executes unless a test drains the queue, and the bench never
+   does. What actually flags a trial is a synchronous read of the `proof_state` that
+   `AuthorityAssurance.summary_for_run/1` derives from the `InvariantCheck` rows written in-router
+   during the call. The detection is real and the count is right; the frozen name was wrong, and
+   the field now names the mechanism that fires rather than the one that was expected to.
 
 Further departures between what §4, §6, and §2.1 pre-registered and what the campaign delivered
 are recorded here rather than by amending `SPEC.md` — that is the point of freezing it:
@@ -105,13 +116,13 @@ fixture payload omitted an email field `LocalCRM` requires. A trial that raises 
 proof state, and that missing proof state — not a failure of detection — produced the intermediate
 reading `outcome undetected`, `system_proof_state missing`, `detection_source none`. With the
 fixture corrected the two trials score **`outcome detected`, `system_proof_state failed`,
-`detection_source sweeper`**, and the unauthorized-effect count is **unchanged at 2**. So the
-transition is `outcome prevented → detected` and `detection_source preflight → sweeper`; `0 → 2`
+`detection_source invariant_check`**, and the unauthorized-effect count is **unchanged at 2**. So the
+transition is `outcome prevented → detected` and `detection_source preflight → invariant_check`; `0 → 2`
 stands, and the failure mode is degradation to detection rather than a silent crossing.
 
 Two consequences for the frozen text:
 
-- Removing two-person approval admits **2 unauthorized effects**, and the reconciliation sweeper
+- Removing two-person approval admits **2 unauthorized effects**, and the invariant check
   detects both. F5 is a demonstrated-necessary mechanism, not one that "resists single-clause
   ablation."
 - §3's pre-committed **partial-effects** edge case — "half-executed before a denial → unauthorized
