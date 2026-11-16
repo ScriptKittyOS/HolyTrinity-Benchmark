@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_v1",
+  "receipt_hash": "bb7364b5dc50daed1c832afa65efc842ea062b303cc27740d3171c200c4f9b3d",
+  "signature": "rmx3Ows/rZDCmQydGhfQSsoK6wkUJ1hwjXDz1S6Vlvw4pRr614+KdDZsIeiEgQWw/sIOr6hcu1AUg0yAiP1yCQ==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]],\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-nested-65\",\"subject_type\":\"tool_call\"}"
+}

@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_retired_v1",
+  "receipt_hash": "44032ead72c7085d47aa9e46d94fafc16b4a2a4d9bf265ca620eef680ac0684d",
+  "signature": "YEprehLsVNPEgZM+2M5A3eFlwru6VEXoEFTUo9KzlpKt5AB8Njfq5NV44MYIZNY0diIwu1m1qynDgVev46UwDQ==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2025-06-15T00:00:00Z\",\"occurred_at\":\"2026-07-01T00:00:00Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-repeat-inside-outside\",\"subject_type\":\"tool_call\"}"
+}

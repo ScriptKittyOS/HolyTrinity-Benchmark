@@ -1,0 +1,7 @@
+{
+  "key_id": "corpus_reading_v1",
+  "receipt_hash": "5683f237f6d410a336903ebdf6d144740409a14c6dd44e559aca54e05b13c06c",
+  "signature": "+bZ7Grj88OqI7ya16ni3SprNboxi3IGj7jkJ971ThyOfpfE3YOS1y5ddJIHp7UeWNlnx+Eq1AH7s7RVnL9b/Cw==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{\"score\":-0.0},\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-negative-zero-fraction-exponent\",\"subject_type\":\"tool_call\"}",
+  "metadata": {"score": -0.0e5}
+}

@@ -1,0 +1,6 @@
+{
+  "description": "FIXTURE registry for the verifier corpus. Not the published registry.",
+  "entries": [],
+  "schema": "receipt_key_registry.v1",
+  "_note": "V-ENTRIES-EMPTY: entries is an empty list; the registry was supplied and names no key; exit 5"
+}

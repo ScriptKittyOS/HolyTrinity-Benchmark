@@ -1,0 +1,7 @@
+{
+  "key_id": "corpus_reading_v1",
+  "receipt_hash": "76371c787d69884c31e084d5ee5edbbacb7de895acf74765eaec10ad64e96ab2",
+  "signature": "++YSpk3IOI3s2cpMwURMPAJJkpu0vpqasV9yr8bXuZbW9M2kyM81zbt1y50g2S2eEmhvCkUZ2IfubBKZegOIBA==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{\"score\":0.0},\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-sibling-negative-zero\",\"subject_type\":\"tool_call\"}",
+  "metadata": {"score": -0.0}
+}

@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_padding_v1",
+  "receipt_hash": "4f9beab485d943a5283f0a6b7b78ed395dcf45caef4b75145cb45f993e4522b2",
+  "signature": "gh/adZKxf8KVBn+iOQZak/zTBtu/9pjTJTsCOJzvUcNeRM3Uq2UIJA9OzyNkOovP2gmkFT4MeIz1PUJ45i8lBg==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-key-extra-padding\",\"subject_type\":\"tool_call\"}"
+}

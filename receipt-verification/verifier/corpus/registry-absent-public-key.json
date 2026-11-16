@@ -9,7 +9,7 @@
       "valid_from": "2026-01-01T00:00:00Z",
       "valid_to": null,
       "status_changed_at": "2026-01-01T00:00:00Z",
-      "_note": "V-KEY-ABSENT (REQ-109 fix review F2): no public_key, the fingerprint of nothing -- a fingerprint failure, never the key-length site"
+      "_note": "V-KEY-ABSENT: no public_key, the fingerprint of nothing -- a fingerprint failure, never the key-length site"
     },
     {
       "status": "retired",

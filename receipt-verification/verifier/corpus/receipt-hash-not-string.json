@@ -1,0 +1,8 @@
+{
+  "signature": "ESNbK5x5m5+nD/wst9GMrweYVtr1DG4dT8bM6e+gDbMk/PWf5QFJKYHqYWMggFYeCi/2fRGjEInRTQqrh84MDQ==",
+  "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+  "key_id": "corpus_active_v1",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"verified\",\"subject_type\":\"tool_call\"}",
+  "receipt_hash": 5,
+  "_note": "V-HASH-NOT-STRING: receipt_hash is a number, not a hex string; the receipt states no digest to be held to, exit 1"
+}

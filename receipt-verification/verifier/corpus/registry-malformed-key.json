@@ -10,7 +10,7 @@
       "valid_from": "2026-01-01T00:00:00Z",
       "valid_to": null,
       "status_changed_at": "2026-01-01T00:00:00Z",
-      "_note": "V-KEY-MALFORMED (REQ-109, G-255): a 31-byte public_key that hashes to its own fingerprint -- what the registry published is not an Ed25519 key; a trust question, exit 5"
+      "_note": "V-KEY-MALFORMED: a 31-byte public_key that hashes to its own fingerprint -- what the registry published is not an Ed25519 key; a trust question, exit 5"
     },
     {
       "status": "retired",

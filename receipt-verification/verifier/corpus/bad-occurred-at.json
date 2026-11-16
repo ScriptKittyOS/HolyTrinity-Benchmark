@@ -4,5 +4,5 @@
   "key_id": "corpus_active_v1",
   "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"yesterday\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"verified\",\"subject_type\":\"tool_call\"}",
   "receipt_hash": "e01244147b6b39bac4b7676fde4fff8b2a0ca2d27546d61e98d6ead864014a82",
-  "_note": "V-INSTANT-UNREADABLE / V-BOUND-AND-INSTANT (REQ-109): verified.json's signed bytes with occurred_at 'yesterday'; the signature no longer covers them but the instant is asked before any accusation, so exit 5"
+  "_note": "V-INSTANT-UNREADABLE / V-BOUND-AND-INSTANT: verified.json's signed bytes with occurred_at 'yesterday'; the signature no longer covers them but the instant is asked before any accusation, so exit 5"
 }

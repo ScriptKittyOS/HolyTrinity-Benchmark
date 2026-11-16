@@ -1,0 +1,116 @@
+{
+  "description": "FIXTURE registry for the verifier corpus: corpus/registry.json with the active key replaced by a small-order key. Not the published registry.",
+  "entries": [
+    {
+      "status": "active",
+      "public_key": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "key_id": "corpus_active_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "01d0fabd251fcbbe2b93b4b927b26ad2a1a99077152e45ded1e678afa45dbec5",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-01-01T00:00:00Z",
+      "_note": "V-SMALL-ORDER-KEY (2026-11-13): the Ed25519 IDENTITY encoding (01 00 .. 00) as the active key, hashing to its own fingerprint. A small-order key signs for every message: any R = [S]B verifies. A key the registry published but no signature can be checked against"
+    },
+    {
+      "status": "retired",
+      "public_key": "8+2jD71VWBSdLvvWU49bfjA/ok5GoRoPf1LVVtCzlC8=",
+      "key_id": "corpus_retired_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "0ed180cfb490b6bc07577d13e4b2129c1afcc2cf4647a049235c8beadd2c5459",
+      "valid_from": "2025-01-01T00:00:00Z",
+      "valid_to": "2026-01-01T00:00:00Z",
+      "status_changed_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "status": "compromised",
+      "public_key": "aFn+q+tPXsdFynaInYbg6+xDBQ9dnAjcPQt/9qc85GU=",
+      "key_id": "corpus_compromised_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "36dfbac51ec7da6e3da79fbbb85a49a38272a11ae3682f916ee5922b3f1787dd",
+      "valid_from": "2025-06-01T00:00:00Z",
+      "valid_to": "2026-02-01T00:00:00Z",
+      "status_changed_at": "2026-02-01T00:00:00Z"
+    },
+    {
+      "status": "example",
+      "public_key": "7SR6MfuJl8+WJPcWdrjesfCucACkcsXhUNKVgxkOga4=",
+      "key_id": "example_ed25519_v0",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "f324505a2f48fd0e195fd64d6fe4b61596d375eb13c6b8545787530e22945a90",
+      "valid_from": "2026-08-30T00:00:00Z",
+      "valid_to": "2026-08-30T00:00:00Z",
+      "status_changed_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "status": "revoked",
+      "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+      "key_id": "corpus_revoked_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "b346898c782d2fe49009bb228ca6ce97ae2f57e2b7acc92b61818a2e12f0126a",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-03-01T00:00:00Z"
+    },
+    {
+      "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+      "key_id": "corpus_nostatus_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "b346898c782d2fe49009bb228ca6ce97ae2f57e2b7acc92b61818a2e12f0126a",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "status": "active",
+      "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+      "key_id": "corpus_badfp_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "2c90fa391801180af5040ed2472a604cb741ed02e059a4a594399955444fff8e",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "status": "active",
+      "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+      "key_id": "corpus_expired_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "b346898c782d2fe49009bb228ca6ce97ae2f57e2b7acc92b61818a2e12f0126a",
+      "valid_from": "2025-01-01T00:00:00Z",
+      "valid_to": "2026-01-01T00:00:00Z",
+      "status_changed_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "status": "active",
+      "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+      "key_id": "corpus_edge_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "b346898c782d2fe49009bb228ca6ce97ae2f57e2b7acc92b61818a2e12f0126a",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": "2026-01-02T03:04:05Z",
+      "status_changed_at": "2026-01-02T03:04:05Z"
+    },
+    {
+      "status": "active",
+      "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+      "key_id": "corpus_before_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "b346898c782d2fe49009bb228ca6ce97ae2f57e2b7acc92b61818a2e12f0126a",
+      "valid_from": "2026-06-01T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-06-01T00:00:00Z"
+    },
+    {
+      "status": "retired",
+      "public_key": "GchAyqBrTPbfjgB2yZIyz6r0M8PwYTd4I7dX4SaMuoU=",
+      "key_id": "corpus_retired_v2",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "40e4684052c6c1c37c3357f15f08fee98559cccff048fc8dbc3a415664fc441d",
+      "valid_from": "2025-01-01T00:00:00Z",
+      "valid_to": "2026-01-01T00:00:00Z",
+      "status_changed_at": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "schema": "receipt_key_registry.v1"
+}

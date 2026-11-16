@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_v1",
+  "receipt_hash": "844d02169fe8f318e8fa197744ab1a6c2abfcb1148b6909abaf22562fd6f1f88",
+  "signature": "SSf9AZtid7jIX2j6DuHWEkkYPFbbyx9bNaif3u2OjmSKcYn/h2YHMDg6LwP9Mv7aEMc4rOgTpS0TCx4dSNM3CQ==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{\"score\":-0e5},\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-signed-negative-zero-exponent\",\"subject_type\":\"tool_call\"}"
+}

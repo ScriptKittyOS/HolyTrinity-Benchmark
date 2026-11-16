@@ -1,0 +1,6 @@
+{
+  "key_id": "",
+  "receipt_hash": "dbdb565abc7614a842ae25b90eee045c92b934aad9811aa9ac79dd28663af7e6",
+  "signature": "G+BU1tA8bV+wQJNpENN1MPSQl1KwUiG5A+02BwAG5xd6c/CsNGyC2F+KFFij6JiUGhAOVX9sroDqhUqC77kNDA==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-empty-key-id\",\"subject_type\":\"tool_call\"}"
+}

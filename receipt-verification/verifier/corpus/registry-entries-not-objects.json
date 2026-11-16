@@ -1,0 +1,24 @@
+{
+  "description": "FIXTURE registry for the verifier corpus. Not the published registry.",
+  "entries": [
+    null,
+    5,
+    "corpus_active_v1",
+    [],
+    true,
+    [
+      {
+        "status": "active",
+        "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+        "key_id": "corpus_active_v1",
+        "algorithm": "ed25519",
+        "public_key_fingerprint": "b346898c782d2fe49009bb228ca6ce97ae2f57e2b7acc92b61818a2e12f0126a",
+        "valid_from": "2026-01-01T00:00:00Z",
+        "valid_to": null,
+        "status_changed_at": "2026-01-01T00:00:00Z"
+      }
+    ]
+  ],
+  "schema": "receipt_key_registry.v1",
+  "_note": "V-ENTRY-NOT-OBJECT: every element of entries is something other than an object, so none names a key_id; exit 5"
+}

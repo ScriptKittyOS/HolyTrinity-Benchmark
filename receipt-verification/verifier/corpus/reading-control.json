@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_v1",
+  "receipt_hash": "18a0f47bcb260e4f71216e118a7abcf0233dae17a62eebe4fea351c799673899",
+  "signature": "4w9kcsRJVyRCtgoSNN61ixuFy6zDRkv393HjPgwHJFLfSKadcP7wJx645Wj/JUPA/Jli1Qgft18pofCXUhG4DQ==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-control\",\"subject_type\":\"tool_call\"}"
+}

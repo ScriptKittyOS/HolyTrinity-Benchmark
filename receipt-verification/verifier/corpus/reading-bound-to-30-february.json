@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_bad_to_v1",
+  "receipt_hash": "f9815a56bf015dd0e631689fb103fe1abed9a4d18db49a114ce1eb5a08f06355",
+  "signature": "W4z/3vu6gjO9TSxQtfLOP0KqwrEqBiMMc1NcffyNt/d40NpCs+yrMOqrV3mrrnpqE7jnausN5W+H6xVbSVtEAw==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2026-02-10T00:00:00Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-bound-to-30-february\",\"subject_type\":\"tool_call\"}"
+}

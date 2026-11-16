@@ -1,0 +1,66 @@
+{
+  "description": "FIXTURE registry for the verifier corpus's reading rows. Not the published registry. Each key's seed is sha256 of the text 'requisition verifier reading corpus v1: ' followed by the entry's key_id (for the empty key_id: followed by nothing), so the private halves are NOT secret: these keys sign nothing outside this corpus.",
+  "entries": [
+    {
+      "status": "active",
+      "public_key": "vvhxYvjBKh1wDV2GjtIS7mup+Yx9cQpSLbkZAg6i5VA=",
+      "key_id": "corpus_reading_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "04584fba193941990f0491d381c14e804bf575962ed60ca9f8763490defd08c0",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "status": "retired",
+      "public_key": "K3K8Cyza/0jvNeFjK3/9nA3WWXw/MQi465bPU2w9Q6s=",
+      "key_id": "corpus_reading_retired_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "b6971778e13831ec563c714852c1c4a4fc21505fc7489ed77e845c3b17a6b7d3",
+      "valid_from": "2025-01-01T00:00:00Z",
+      "valid_to": "2026-06-01T00:00:00Z",
+      "status_changed_at": "2026-06-01T00:00:00Z"
+    },
+    {
+      "status": "active",
+      "public_key": "u6dqmmf/W2KbtZiSQGBj2Ov/9vXR+pYazYOgLL5pmcs=",
+      "key_id": "",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "d453ba5887734f738d70d355bebe38273fa848bd81824683d17213c117b18ef9",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "status": "active",
+      "public_key": "bynW48p34gOOneGUfIiy/3rUTTpAr1A+xeAPrabcWCc=",
+      "key_id": "corpus_reading_bad_from_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "fad79e7c0e04e60e54d1a37e366725447ee60b8a6cad731dee0a6cfcf1d60cf2",
+      "valid_from": "2026-02-30T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-02-30T00:00:00Z"
+    },
+    {
+      "status": "active",
+      "public_key": "aMc9O6MWRHZPfWslKte44xz1P2E2OVt6P+oZ+0vHAwE=",
+      "key_id": "corpus_reading_bad_to_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "863995b07ea2e411cab7d7fd663c3b1fbbd0d148ccd3e1e35e0fee83b4c34245",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": "2026-02-30T00:00:00Z",
+      "status_changed_at": "2026-02-30T00:00:00Z"
+    },
+    {
+      "status": "active",
+      "public_key": "IhcK+LNK25wNeraKUYMMZvH2CfnVB0zzX22p56fsoRcA=",
+      "key_id": "corpus_reading_padding_v1",
+      "algorithm": "ed25519",
+      "public_key_fingerprint": "ecbd05d992bddbd7264ab94c430e61099b643f271f8f622832f36563c3aa1841",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_to": null,
+      "status_changed_at": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "schema": "receipt_key_registry.v1"
+}

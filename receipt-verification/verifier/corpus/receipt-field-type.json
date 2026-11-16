@@ -1,0 +1,20 @@
+{
+  "signature": "ESNbK5x5m5+nD/wst9GMrweYVtr1DG4dT8bM6e+gDbMk/PWf5QFJKYHqYWMggFYeCi/2fRGjEInRTQqrh84MDQ==",
+  "public_key": "T420GP4fAnpDAYbNTskBhfnj07nhl1hFtPrFoXmPi7I=",
+  "key_id": "corpus_active_v1",
+  "signed_payload": {
+    "chain_scope": "account:corpus:run:corpus",
+    "metadata": {},
+    "occurred_at": "2026-01-02T03:04:05Z",
+    "payload_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "previous_hash": null,
+    "receipt_type": "tool.succeeded",
+    "schema_version": "agent_receipt.v1",
+    "sequence": 1,
+    "status": "recorded",
+    "subject_id": "verified",
+    "subject_type": "tool_call"
+  },
+  "receipt_hash": "f9b0089c1abb34704a33b06e4abec8999b2b1ef185f41104cf98bf8c38868cde",
+  "_note": "V-RECEIPT-FIELD-TYPE: signed_payload is an object, not a string; the receipt is not in the form a verifier can read, exit 2"
+}

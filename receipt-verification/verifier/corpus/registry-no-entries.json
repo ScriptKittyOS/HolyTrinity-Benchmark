@@ -1,5 +1,5 @@
 {
   "description": "FIXTURE registry for the verifier corpus. Not the published registry.",
   "schema": "receipt_key_registry.v1",
-  "_note": "V-NO-ENTRIES (REQ-109, G-253): the entries key is absent; the registry gives no basis to judge anything, exit 5"
+  "_note": "V-NO-ENTRIES: the entries key is absent; the registry gives no basis to judge anything, exit 5"
 }

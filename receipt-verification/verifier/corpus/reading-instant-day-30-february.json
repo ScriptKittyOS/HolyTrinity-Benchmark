@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_v1",
+  "receipt_hash": "1e67b795bd23068c25cb45ed2cf8cc8d25acb3f075a0651edd55acf610fd0628",
+  "signature": "72EN7izcAxLS0ivCKTlALMUV6nJFaHl1X3DGKXNY2NWqGeQdRi9waMdMHVQoR6EadYFWxCnEjorORctbBRyPCw==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2026-02-30T00:00:00Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-instant-day-30-february\",\"subject_type\":\"tool_call\"}"
+}

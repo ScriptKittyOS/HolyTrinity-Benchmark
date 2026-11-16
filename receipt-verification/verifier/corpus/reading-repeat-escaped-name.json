@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_retired_v1",
+  "receipt_hash": "9fb3c5938d2b08bdc94ed937eb83822832e5e023027bc2898b620b2947ccc22f",
+  "signature": "53q2nA/81t5pelQVSvzX/5PVsjTy3cGKLoa0lcs1Xu8Hd/r4/QUI31ViOnbJi6D601fK5Rl8VrlSrV8XfPleCA==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2026-07-01T00:00:00Z\",\"\\u006fccurred_at\":\"2025-06-15T00:00:00Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-repeat-escaped-name\",\"subject_type\":\"tool_call\"}"
+}

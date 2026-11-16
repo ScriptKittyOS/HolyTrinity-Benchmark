@@ -2,5 +2,5 @@
   "description": "FIXTURE registry for the verifier corpus. Not the published registry.",
   "entries": null,
   "schema": "receipt_key_registry.v1",
-  "_note": "V-NULL-ENTRIES (REQ-109, G-253/M6): entries is null; the Elixir verifier crashed on this shape before 2026-09-20 (exit 1 by accident); exit 5"
+  "_note": "V-NULL-ENTRIES: entries is null; the Elixir verifier crashed on this shape before 2026-09-20 (exit 1 by accident); exit 5"
 }

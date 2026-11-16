@@ -1,0 +1,6 @@
+{
+  "key_id": "corpus_reading_v1",
+  "receipt_hash": "a81f2f396d23b7f24606178bb018611a68a3285b60e3c9ce8f043279271951b7",
+  "signature": "Ag6T93wIOUjTe6VpXI+E/eEerBjRSHp1ikBq+NB/XnWeUZpXY9tpejw2x/KgQD39OOqr9ekQx0t80fzwEgnqDw==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{},\"occurred_at\":\"2026-03-01T24:00:00Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-instant-hour-24\",\"subject_type\":\"tool_call\"}"
+}

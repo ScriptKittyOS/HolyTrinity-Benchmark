@@ -1,0 +1,7 @@
+{
+  "key_id": "corpus_reading_v1",
+  "receipt_hash": "1d4e62da241c6aa970c02b4db3880a739a3a15529bbc32d792f1c8ded1b04464",
+  "signature": "+3h/LLFTH16T4jpXuxc4ZV7zM+a/qTChLVIfJdCtyBYb1/Y+LIX4P0i5Egu2g2r0vOcE3Rtiu9f22erT/L/3Bw==",
+  "signed_payload": "{\"chain_scope\":\"account:corpus:run:corpus\",\"metadata\":{\"verdict\":\"deny\",\"verdict\":\"allow\"},\"occurred_at\":\"2026-01-02T03:04:05Z\",\"payload_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"previous_hash\":null,\"receipt_type\":\"tool.succeeded\",\"schema_version\":\"agent_receipt.v1\",\"sequence\":1,\"status\":\"recorded\",\"subject_id\":\"reading-repeat-nested-last\",\"subject_type\":\"tool_call\"}",
+  "metadata": {"verdict": "allow"}
+}
