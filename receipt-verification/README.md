@@ -3,6 +3,8 @@
 Everything needed to check a Trinity authority receipt **without trusting the system that issued
 it**: the public key registry, and two independent verifier implementations.
 
+**Correction note for r4 (2026-11-16):** [`CORRECTION-r4-2026-11-16.md`](CORRECTION-r4-2026-11-16.md). The r4 Ed25519 check is less strict than RFC 8032, the two r4 programs disagree on one input, and the r4 `VERDICTS.md` misstates the order of two checks. No exit status on a receipt published here changes.
+
 ## What this is, and what it is not
 
 This directory is **versioned independently of the HolyTrinity benchmark.** It ships when a key
