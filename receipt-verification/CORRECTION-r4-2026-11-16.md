@@ -6,8 +6,8 @@ Applies to: the release tagged `receipt-verification-r4` in this repository, tha
 (`receipt-verification/verifier/verify_receipt.py` and `receipt-verification/verifier/verify_receipt.exs`) and its
 `receipt-verification/verifier/VERDICTS.md`.
 
-Does not change: the exit status of either r4 program on any receipt published in this repository (see
-"Receipts published here", below).
+On every receipt published in this repository, each r4 program gives the same exit status as the program prepared
+for the next release in the same language (see "Receipts published here", below).
 
 r4 stays published as it is. This note is added beside it; nothing in r4 is rewritten.
 
@@ -42,14 +42,16 @@ r4 stays published as it is. This note is added beside it; nothing in r4 is rewr
   verifiers of one release must give the same answer on every input. We treat this as a defect.
 - The signature of point 3 was made without any private key (`build_cases.py`). Both r4 programs read the key
   from the registry file given with `--registry`; the registries published in this repository hold no key of
-  small order (next section).
+  small order (next section). So point 3 can affect a reader only if the registry file that reader passes holds
+  such a key, and whoever writes or supplies that file decides what it holds.
 
 ## Receipts published here
 
 - We ran the r4 `verify_receipt.py` and the Python verifier prepared for the next release over every pairing of
   the 27 JSON files of `receipt-verification/verifier/corpus` at r4, each as a receipt, with those 27 files and the
   two registries in `receipt-verification/keys`, each as a registry: 783 pairs. The exit status is the same in all
-  783.
+  783. We did the same with the r4 `verify_receipt.exs` and the Elixir verifier prepared for the next release: the
+  exit status is the same in all 783 pairs.
 - In those 29 files, 19 receipts carry a signature. In 18 of them R is a canonical encoding of a point of the
   prime-order subgroup; the 19th is a fixture whose signature is too short to hold an R. Every registry key of 32
   bytes in those files (38 keys, among them the two keys of `keys/registry.json` and the one key of
