@@ -58,4 +58,16 @@ stops meaning anything the moment "this release" is ambiguous.**
     verifier/VERDICTS.md    THE SINGLE SOURCE: every verdict, the input that produces it, and
                             the order the checks run in
     verifier/README.md      how to run it, the signing scheme, and why a bundle-local key is refused
+    verifier/CHECKPOINTS.md how both verifiers check a lab record against a checkpoint of the
+                            evaluation environment's transparency log (from r5)
     keys/README.md          the registry's schema, its statuses, and the append-only rule
+
+## Licence
+
+| release | licence |
+|---|---|
+| r1 to r4 | as published: no licence file of their own, in this repository under its root `LICENSE` (CC BY 4.0). This release does not change them. |
+| r5 on | the Apache License, Version 2.0: [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE) in this directory, for everything in `receipt-verification/`. |
+
+The rest of this repository, the HolyTrinity benchmark, keeps its own licence, CC BY 4.0 (the
+`LICENSE` file at the repository root).
