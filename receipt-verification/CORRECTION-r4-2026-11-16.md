@@ -18,12 +18,12 @@ r4 stays published as it is. This note is added beside it; nothing in r4 is rewr
    field prime p, and section 5.1.7 says that a signature is invalid if any decoding fails. The r4
    `verify_receipt.py` clears the top bit of the 32 bytes and decodes the rest without that comparison
    (`_decode_point`, lines 110-118). On such a signature it prints `VERIFIED` and exits 0 (input `nc`).
-2. **Both r4 verifiers accept a signature whose R is a point of small order** (input `c`: R is the identity point,
+2. **Both r4 verifiers accept a signature whose R is the identity point, a point of small order** (input `c`, R
    written canonically). RFC 8032's verification procedure (section 5.1.7) has no rule against such an R.
-3. **Both r4 verifiers accept a registry key of small order, and under such a key one signature verifies over
-   any signed bytes.** Inputs `idkey1` and `idkey2` name a registry key equal to the identity point and carry the
-   same signature (R the identity point, S = 0) over two different signed payloads; both r4 programs print
-   `VERIFIED` and exit 0 for both. RFC 8032's verification procedure has no rule against such a key either.
+3. **Both r4 verifiers accept the identity point, a point of small order, as a registry key, and under it one
+   signature verified over two different signed payloads.** Inputs `idkey1` and `idkey2` name that registry key and
+   carry the same signature (R the identity point, S = 0); both r4 programs print `VERIFIED` and exit 0 for both.
+   RFC 8032's verification procedure has no rule against such a key either.
 4. **On input `nc` the two r4 verifiers give different answers.** The r4 `verify_receipt.exs` hands the signature
    to the Erlang runtime's `:crypto.verify/5` (line 411). On Erlang/OTP 28 built with OpenSSL 3.0.13 it prints
    `SIGNATURE INVALID` and exits 1, where the r4 `verify_receipt.py` prints `VERIFIED` and exits 0. Other OpenSSL
@@ -40,9 +40,9 @@ r4 stays published as it is. This note is added beside it; nothing in r4 is rewr
 - With the private key of a registered key, one can make a receipt that one r4 program accepts and the other
   refuses: input `nc` was made that way (`build_cases.py`), and the two programs disagree on it (point 4). Two
   verifiers of one release must give the same answer on every input. We treat this as a defect.
-- Under a registry key of small order, the signature of point 3 needs no private key. Both r4 programs read the
-  key from the registry file given with `--registry`; the registries published in this repository hold no such
-  key (next section).
+- The signature of point 3 was made without any private key (`build_cases.py`). Both r4 programs read the key
+  from the registry file given with `--registry`; the registries published in this repository hold no key of
+  small order (next section).
 
 ## Receipts published here
 
@@ -61,10 +61,9 @@ r4 stays published as it is. This note is added beside it; nothing in r4 is rewr
 
 ## What changes in the next release
 
-- Both verifier programs refuse a non-canonical R, an R of small order and a registry key of small order. On
-  inputs `nc`, `c`, `idkey1` and `idkey2` they print `SIGNATURE INVALID` and `verdict_code: signature_invalid`, and
-  exit 1. Its `VERDICTS.md` lists these refusals in the section "What "signature failing to verify" includes: the
-  Ed25519 refusals".
+- On inputs `nc`, `c`, `idkey1` and `idkey2` both verifier programs print `SIGNATURE INVALID` and
+  `verdict_code: signature_invalid`, and exit 1. Its `VERDICTS.md` lists the refusals behind those answers in the
+  section "What "signature failing to verify" includes: the Ed25519 refusals".
 - Its `VERDICTS.md` says: "Every trust question but the signing window precedes every accusation; `6` and the
   signing-window answer are given only over a signature that has already verified."
 - Both statements above were measured on the verifier sources prepared for that release, on the date of this
