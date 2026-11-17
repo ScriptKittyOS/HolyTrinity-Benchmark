@@ -458,7 +458,7 @@ Which of these could be in the signed bytes of a CHAIN RECEIPT the issuing syste
 negative zero with an exponent: canonical versions 2 and 3, the forms of its chain receipts, write every float with a
 fraction. Since the change of 2026-11-16 the issuing system signs no float: it refuses one by name
 (`float_refused`) at every door that signs or hashes into signed bytes, and canonical version 4 refuses a float
-itself; a chain receipt signed before that series may hold a float, in the form versions 2 and 3 write. Three kinds
+itself; a chain receipt signed before that change may hold a float, in the form versions 2 and 3 write. Three kinds
 could:
 
 - *A member name written twice*, before 2026-09-16. Since that date its encoder refuses an object
